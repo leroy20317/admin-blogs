@@ -1,0 +1,71 @@
+import React, { memo, useEffect, useRef, useState } from 'react';
+import Vditor from 'vditor';
+import 'vditor/dist/index.css';
+import styles from './index.less';
+import url from '@/utils/url';
+import { useModel } from 'umi';
+
+const Editor = ({ value, onChange }: { value?: any; onChange?: Function }) => {
+  const { initialState } = useModel('@@initialState');
+  const [vditorEditor, setVditor] = useState<any>(null);
+  const ref = useRef<any>(null);
+
+  useEffect(() => {
+    const { currentUser } = initialState || {};
+    const vditor = new Vditor(ref.current, {
+      height: 420,
+      toolbarConfig: {
+        pin: true,
+      },
+      cache: {
+        enable: false,
+      },
+      // after() {
+      //   vditor.setValue(value || '');
+      // },
+      value: value?.val,
+      blur: (val) => {
+        if (onChange) {
+          onChange({ val, html: vditor?.getHTML(), length: val.length });
+          // onChange(val);
+        }
+      },
+      preview: {
+        delay: 200,
+        actions: ['desktop', 'mobile'],
+        markdown: {
+          autoSpace: true,
+          fixTermTypo: true,
+          toc: true,
+        },
+      },
+      upload: {
+        url: url.upload,
+        multiple: false,
+        accept: 'audio/*,video/*,image/*',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
+        },
+        extraData: {
+          type: currentUser?.upload_type || '',
+        },
+        fieldName: 'file',
+        success: (editor, msg) => {
+          const response = JSON.parse(msg);
+          if (response.status === 'success') {
+            const md = `![${response.body.filename}](${response.body.url})`;
+            vditor.insertValue(md);
+          }
+        },
+      },
+    });
+    setVditor(vditor);
+
+    return () => {
+      vditorEditor?.destroy();
+    };
+  }, []);
+
+  return <div className={styles.editor} ref={ref} />;
+};
+export default memo(Editor);

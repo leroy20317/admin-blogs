@@ -1,0 +1,79 @@
+﻿export default [
+  {
+    path: '/user',
+    layout: false,
+    routes: [
+      {
+        path: '/user',
+        routes: [
+          {
+            name: 'login',
+            path: '/user/login',
+            component: './User/login',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: '/home',
+    name: 'home',
+    icon: 'icon-sunny',
+    component: './home/index',
+  },
+
+  {
+    path: '/article',
+    name: 'article',
+    icon: 'icon-cloudy-and-sunny',
+    component: './article/index',
+  },
+  {
+    path: '/article-info',
+    name: 'article.info',
+    icon: 'icon-partly-cloudy',
+    component: './article/info',
+  },
+
+  {
+    path: '/envelope',
+    name: 'envelope',
+    icon: 'icon-heavy-rain',
+    component: './envelope/index',
+  },
+  {
+    path: '/envelope-info',
+    name: 'envelope.info',
+    icon: 'icon-light-rain',
+    component: './envelope/info',
+  },
+
+  {
+    path: '/comment',
+    name: 'comment',
+    icon: 'icon-lightning',
+    component: './home/index',
+  },
+
+  {
+    path: '/myself',
+    name: 'myself',
+    icon: 'icon-sunset',
+    component: './Welcome',
+  },
+
+  {
+    path: '/setting',
+    name: 'setting',
+    icon: 'icon-moon-night',
+    component: './home/index',
+  },
+
+  {
+    path: '/',
+    redirect: '/home',
+  },
+  {
+    component: './404',
+  },
+];

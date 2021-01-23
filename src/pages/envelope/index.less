@@ -1,0 +1,42 @@
+@import '~antd/es/style/themes/default.less';
+
+.envelope {
+  .header {
+    margin: 20px 0 30px;
+    padding-left: 16px;
+    color: #0084ff;
+    font-weight: 400;
+    font-size: 18px;
+    border-left: 2px solid #0084ff;
+  }
+
+  :global(.ant-list-header) {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  :global(.ant-list-item) {
+    display: block;
+    padding-right: 12px;
+    padding-left: 12px;
+    color: #606266;
+    transition: background-color 0.25s ease;
+
+    &:hover {
+      background-color: #f5f7fa;
+    }
+
+    .icon{
+      color: #cfcfcf;
+      cursor: pointer;
+
+      &:hover{
+        color: @primary-color;
+      }
+
+      &.delete:hover{
+        color: @btn-danger-bg;
+      }
+    }
+  }
+}

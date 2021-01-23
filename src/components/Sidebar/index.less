@@ -1,0 +1,119 @@
+@import '~antd/es/style/themes/default.less';
+
+
+:global {
+  .ant-layout-sider {
+    color: #fff;
+    background: @primary-color;
+
+    .ant-pro-sider-menu {
+      .anticon{
+        font-size: 16px;
+      }
+    }
+    &:not(.ant-layout-sider-collapsed) {
+      .ant-pro-sider-menu {
+        padding-left: 8px;
+        .ant-menu-item {
+          height: 40px;
+          margin-bottom: 5px;
+          padding: 0 0 0 32px !important;
+          color: #fff;
+          line-height: 42px;
+          text-align: center;
+          text-align: left;
+          border-radius: 20px 0 0 20px;
+
+          a {
+            color: #fff;
+          }
+
+          &::after {
+            border-right: 0;
+          }
+
+          &-selected,
+          &-active {
+            color: @primary-color;
+            background: #fff;
+
+            a {
+              color: @primary-color;
+            }
+          }
+        }
+      }
+    }
+    &.ant-layout-sider-collapsed {
+      .ant-pro-sider-menu {
+        .ant-menu-item {
+          color: #fff;
+          a {
+            color: #fff;
+          }
+
+          &-selected,
+          &-active {
+            color: @primary-color;
+            background-color: #e6f7ff;
+
+            a {
+              color: @primary-color;
+            }
+          }
+        }
+      }
+    }
+
+    .ant-pro-sider-link-menu {
+      .ant-menu-item {
+        color: rgba(255, 255, 255, 0.7);
+        &-active {
+          color: #fff;
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}
+
+.info {
+  width: 100%;
+  margin-top: 30px;
+  text-align: center;
+
+  .photo {
+    max-width: 70px;
+    max-height: 70px;
+    margin: auto;
+    overflow: hidden;
+    background: #fff;
+    border: 3px solid @primary-color;
+    border-radius: 50%;
+    transition: all 0.3s;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .name {
+    margin-top: 15px;
+    color: #fff;
+  }
+}
+
+:global(.ant-layout-sider-collapsed) {
+  .info {
+    margin-top: 10px;
+    .photo {
+      max-width: 40px;
+      max-height: 40px;
+    }
+
+    .name {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,112 @@
+@import '~antd/es/style/themes/default.less';
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout {
+  background-color: @primary-color;
+
+  .ant-layout-content {
+    position: relative;
+    margin: 0;
+    padding: 40px 0;
+    overflow: hidden;
+    background-color: rgb(249, 252, 255);
+    border-radius: 20px;
+    transition: all 0.3s;
+
+    .ant-pro-page-container {
+      height: 100%;
+      margin: 0;
+      padding: 0 60px;
+      overflow: auto;
+
+      &::-webkit-scrollbar-track {
+        background: #fff;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #eef7ff;
+      }
+
+      &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      &-children-content{
+        margin: 0;
+      }
+      &-warp{
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+.ant-design-pro {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 800px;
+  min-height: auto;
+  max-height: 90vh;
+  margin: auto;
+  overflow: hidden;
+  background: #fff;
+  background: #0e8bff;
+  border-radius: 20px;
+  -webkit-box-shadow: 0 5px 40px #d2eaff;
+  box-shadow: 0 5px 40px #d2eaff;
+}
+
+@media (max-width: @screen-xs) {
+  .ant-table {
+    width: 100%;
+    overflow-x: auto;
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
+        white-space: pre;
+        > span {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+// 兼容IE11
+@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
+  body .ant-design-pro > .ant-layout {
+    min-height: 100vh;
+  }
+}
