@@ -1,28 +1,3 @@
-
-
-interface Time {
-  date: string;
-  time: string;
-  year: string;
-  month: Month;
-  day: Day;
-  week: Week;
-}
-
-type Week = Day;
-
-interface Day {
-  on: string;
-  en: string;
-}
-
-interface Month {
-  on: string;
-  cn: string;
-  en: string;
-}
-
-
 type Image = Music;
 
 interface Music {
@@ -111,17 +86,18 @@ declare namespace API {
     __v: number;
   }
 
-  export type Envelope = {
-    _id: string;
-    content: string;
-    time: string;
-    __v: number;
-  }
-
   export type ArticleList =  {
     total: number;
     data: Article[];
     page: number;
+  }
+
+  export type Envelope = {
+    _id: string;
+    content: string;
+    contentHtml: string;
+    time: string;
+    __v: number;
   }
 
   export type EnvelopeList =  {
@@ -130,7 +106,38 @@ declare namespace API {
     page: number;
   }
 
+  export type Comment = {
+    status: number;
+    type: number;
+    _id: string;
+    image: number;
+    name: string;
+    time: string;
+    email: string;
+    content: string;
+    topic_id: number;
+    id: number;
+    type: number;
+    parent_id: number;
+    reply_name: string;
+    reply_email: string;
 
+    admin: boolean;
+    __v: number;
+  }
+
+  export type CommentList =  {
+    total: number;
+    data: Comment[];
+    page: number;
+  }
+
+  export type Myself =  {
+    _id: string;
+    __v: number;
+    content: string;
+    contentHtml: string;
+  }
 
 
 

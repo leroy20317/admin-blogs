@@ -34,6 +34,7 @@ const Article: FC = () => {
     del({ id }).then((res) => {
       if (res.status === 'success') {
         message.success(res.message, 1);
+        pageChange(data.page || 1)
       } else {
         message.error(res.message || '删除失败', 1);
       }
@@ -45,9 +46,7 @@ const Article: FC = () => {
       loading={loading}
       className={styles.article}
       pageHeaderRender={() => (
-        <>
-          <h2 className={styles.header}>文章列表 ({data?.total})</h2>
-        </>
+        <h2 className={styles.header}>文章列表 ({data?.total})</h2>
       )}
     >
       <List
@@ -86,17 +85,17 @@ const Article: FC = () => {
               <Col span={4} offset={2}>
                 <Space align="start" size="middle">
                   <Tooltip title="View Article">
-                    <EyeOutlined className={styles.icon} onClick={() => view(item?.id)} />
+                    <EyeOutlined className={styles.icon} onClick={() => view(item.id)} />
                   </Tooltip>
                   <Tooltip title="Edit Article">
                     {/* eslint-disable-next-line no-underscore-dangle */}
-                    <EditOutlined className={styles.icon} onClick={() => edit(item?._id)} />
+                    <EditOutlined className={styles.icon} onClick={() => edit(item._id)} />
                   </Tooltip>
                   <Popconfirm
-                    title="删除该文章, 是否继续?"
+                    title="是否删除该文章?"
                     onConfirm={
                       /* eslint-disable-next-line no-underscore-dangle */
-                      () => deleteItem(item?._id)
+                      () => deleteItem(item._id)
                     }
                     okText="确定"
                     cancelText="取消"

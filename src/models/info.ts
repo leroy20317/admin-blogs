@@ -14,7 +14,7 @@ export default function useInfoModel() {
     }).finally(() => {
       setTimeout(() => {
         setLoading(false)
-      }, 100)
+      }, 500)
     })
   }, [])
 

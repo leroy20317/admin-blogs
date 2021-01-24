@@ -5,7 +5,7 @@ import styles from './index.less';
 import url from '@/utils/url';
 import { useModel } from 'umi';
 
-const Editor = ({ value, onChange }: { value?: any; onChange?: Function }) => {
+const Editor = ({ value, onChange, height, placeholder }: { value?: any; onChange?: Function, height?: number, placeholder?: string }) => {
   const { initialState } = useModel('@@initialState');
   const [vditorEditor, setVditor] = useState<any>(null);
   const ref = useRef<any>(null);
@@ -13,7 +13,8 @@ const Editor = ({ value, onChange }: { value?: any; onChange?: Function }) => {
   useEffect(() => {
     const { currentUser } = initialState || {};
     const vditor = new Vditor(ref.current, {
-      height: 420,
+      height: height || 420,
+      placeholder,
       toolbarConfig: {
         pin: true,
       },

@@ -27,7 +27,7 @@ const ArticleInfo: FC = () => {
         .finally(() => {
           setTimeout(() => {
             setLoading(false);
-          }, 100);
+          }, 500);
         });
     });
   };
@@ -150,7 +150,7 @@ const ArticleInfo: FC = () => {
           name="editor"
           rules={[{ required: true, transform: value => value?.html, message: '请填写内容!' }]}
         >
-          <Editor />
+          <Editor placeholder='请填写文章内容！' />
         </Form.Item>
         <Form.Item
           label="发布时间"

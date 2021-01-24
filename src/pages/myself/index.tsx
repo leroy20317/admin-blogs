@@ -1,22 +1,20 @@
 import React, { FC, useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button, DatePicker, Form, message } from 'antd';
-import styles from './info.less';
-import { history } from 'umi';
-import { create, fetch, update } from '@/services/envelope';
+import { Button, Form, message } from 'antd';
+import styles from './index.less';
+import { fetchMyself, postMyself } from '@/services/common';
 import Editor from '@/components/Editor';
-import moment from 'moment';
+import { history } from 'umi';
 
-const EnvelopeInfo: FC = () => {
-  const { id } = history.location.query || {};
+const Myself: FC = () => {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const getDetail = () => {
-    return new Promise((resolve) => {
+  const getMyself = () => {
+    return new Promise<(value: API.Myself) => void>((resolve) => {
       setLoading(true);
-      fetch({ id })
+      fetchMyself()
         .then((res) => {
           if (res.status === 'success') {
             resolve(res.body);
@@ -31,46 +29,38 @@ const EnvelopeInfo: FC = () => {
   };
 
   useEffect(() => {
-    if (id) {
-      getDetail().then((res: any) => {
-        form.setFieldsValue({
-          editor: {
-            val: res?.content,
-            html: res?.contentHtml,
-            length: res?.words,
-          },
-          time: res?.time && moment(res.time),
-        });
+    getMyself().then(({ _id: id, content, contentHtml }: any) => {
+      form.setFieldsValue({
+        _id: id,
+        editor: {
+          val: content,
+          html: contentHtml,
+          length: content.length,
+        },
       });
-    }
+    });
 
     return () => {
       form.resetFields();
     };
   }, []);
 
-  const onFinish = async (values: any) => {
+  const onFinish = async ({ _id: id, editor }: any) => {
     const params = {
-      content: values.editor.val,
-      contentHtml: values.editor.html,
-      words: values.editor.length,
-      time: values.time.format('YYYY-MM-DD HH:mm:ss'),
+      _id: id,
+      content: editor.val,
+      contentHtml: editor.html,
     };
 
-    console.log(!id ? '创建' : '更新', params);
+    console.log('params', params);
 
     try {
       setSubmitting(true);
-      const response = !id
-        ? await create(params)
-        : await update({
-            id,
-            data: params,
-          });
+      const response = await postMyself(params);
       if (response.status === 'success') {
         message.success(response.message, 1);
         setTimeout(() => {
-          history.push('/envelope');
+         history.push('/home')
         }, 800);
       } else {
         message.error(response.message, 1);
@@ -90,10 +80,10 @@ const EnvelopeInfo: FC = () => {
   return (
     <PageContainer
       loading={loading}
-      className={styles.info}
+      className={styles.myself}
       pageHeaderRender={() => (
         <>
-          <h2 className={styles.header}>无人问津的心情，在黑纸白字间游荡！</h2>
+          <h2 className={styles.header}>个人信息页，来让陌生人认识一下自己吧！！</h2>
         </>
       )}
     >
@@ -105,19 +95,14 @@ const EnvelopeInfo: FC = () => {
         requiredMark={false}
         labelAlign="left"
       >
+        <Form.Item noStyle name='_id' hidden>
+          <input />
+        </Form.Item>
         <Form.Item
-          label="短语内容"
           name="editor"
           rules={[{ required: true, message: '请填写内容!' }]}
         >
-          <Editor placeholder='请填写短语！' />
-        </Form.Item>
-        <Form.Item
-          label="发布时间"
-          name="time"
-          rules={[{ required: true, message: '请选择发布时间!' }]}
-        >
-          <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+          <Editor height={600} placeholder='请填写自我介绍！' />
         </Form.Item>
         <Form.Item>
           <Button
@@ -134,4 +119,4 @@ const EnvelopeInfo: FC = () => {
   );
 };
 
-export default EnvelopeInfo;
+export default Myself;

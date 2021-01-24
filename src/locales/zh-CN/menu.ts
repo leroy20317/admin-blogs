@@ -20,7 +20,7 @@ export default {
   'menu.home': 'My world',
   'menu.article': 'Small mood',
   'menu.article.info': 'New mood',
-  'menu.envelope': 'A letterd',
+  'menu.envelope': 'A letter',
   'menu.envelope.info': 'New letter',
   'menu.comment': 'Comment',
   'menu.myself': 'Myself',

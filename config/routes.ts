@@ -52,14 +52,14 @@
     path: '/comment',
     name: 'comment',
     icon: 'icon-lightning',
-    component: './home/index',
+    component: './comment/index',
   },
 
   {
     path: '/myself',
     name: 'myself',
     icon: 'icon-sunset',
-    component: './Welcome',
+    component: './myself/index',
   },
 
   {
