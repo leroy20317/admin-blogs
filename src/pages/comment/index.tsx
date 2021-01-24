@@ -155,7 +155,7 @@ const Comment: FC = () => {
   };
 
   // 回复评论
-  const replay = (comment: API.Comment) => {
+  const replayComment = (comment: API.Comment) => {
     replayRef?.current.show(comment);
   };
   // 删除评论
@@ -240,7 +240,7 @@ const Comment: FC = () => {
                     <EyeOutlined className={styles.icon} onClick={() => view(item.topic_id)} />
                   </Tooltip>
                   <Tooltip title="Replay Comment">
-                    <MessageOutlined className={styles.icon} onClick={() => replay(item)} />
+                    <MessageOutlined className={styles.icon} onClick={() => replayComment(item)} />
                   </Tooltip>
                   <Popconfirm
                     title={
