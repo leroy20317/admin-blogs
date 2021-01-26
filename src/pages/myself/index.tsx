@@ -43,7 +43,7 @@ const Myself: React.FC = () => {
     return () => {
       form.resetFields();
     };
-  }, [form, getMyself]);
+  }, []);
 
   const onFinish = async ({ _id: id, editor }: any) => {
     const params = {

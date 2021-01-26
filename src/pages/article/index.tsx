@@ -19,7 +19,7 @@ const Article: React.FC = () => {
 
   useEffect(() => {
     getList({});
-  }, [getList]);
+  }, []);
 
   const pageChange = (page: number) => {
     getList({ page });

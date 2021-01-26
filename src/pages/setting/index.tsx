@@ -59,7 +59,7 @@ const Setting: React.FC = () => {
     return () => {
       form.resetFields();
     };
-  }, [currentUser, form]);
+  }, []);
 
   const onFinish = async ({
     _id: id,

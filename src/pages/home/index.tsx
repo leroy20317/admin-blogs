@@ -17,7 +17,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     getInfo();
-  }, [getInfo]);
+  }, []);
 
   return (
     <>

@@ -65,7 +65,7 @@ const ArticleInfo: React.FC = () => {
     return () => {
       form.resetFields();
     };
-  }, [id, form, getDetail]);
+  }, []);
 
   const onFinish = async (values: any) => {
     const params = {
