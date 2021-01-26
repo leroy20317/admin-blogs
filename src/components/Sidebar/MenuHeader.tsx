@@ -9,9 +9,9 @@ const MenuHeader = ({ currentUser }: Props) => {
   return (
     <div className={styles.info}>
       <div className={styles.photo}>
-        <img src={currentUser?.avatar} />
+        <img src={currentUser?.admin.avatar} />
       </div>
-      <p className={styles.name}>{currentUser?.name}</p>
+      <p className={styles.name}>{currentUser?.admin.name}</p>
     </div>
   );
 };

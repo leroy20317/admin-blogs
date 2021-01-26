@@ -60,8 +60,8 @@ const ReplayModal: React.ForwardRefExoticComponent<any> = forwardRef((props, ref
     }
 
     const params = {
-      name: currentUser?.email.name,
-      email: currentUser?.email.address,
+      name: currentUser?.comment.name,
+      email: currentUser?.comment.email,
       content: text,
       time: moment().format('YYYY-MM-DD HH:mm:ss'),
       image: 1,
@@ -98,7 +98,7 @@ const ReplayModal: React.ForwardRefExoticComponent<any> = forwardRef((props, ref
     <div className={`${styles.commentForm} ${isShow ? styles.active : ''}`}>
       <div className={styles.content}>
         <div className={styles.img}>
-          <img src={currentUser?.avatar} alt="" />
+          <img src={currentUser?.admin.avatar} alt="" />
         </div>
         <p className={styles.name}>回复：{data?.name}</p>
         <Input.TextArea

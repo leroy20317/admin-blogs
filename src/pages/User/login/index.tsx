@@ -146,14 +146,14 @@ const Login: React.FC = () => {
           <h3>创建账号</h3>
 
           <Input
-            placeholder="用户名"
+            placeholder="Username"
             value={data.username}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setData({ ...data, username: e.target.value })
             }
           />
           <Input
-            placeholder="密码"
+            placeholder="Password"
             value={data.password}
             type="password"
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -161,7 +161,7 @@ const Login: React.FC = () => {
             }
           />
           <Input
-            placeholder="重复密码"
+            placeholder="Confirm Password"
             value={data.passwords}
             type="password"
             onChange={(e: ChangeEvent<HTMLInputElement>) =>

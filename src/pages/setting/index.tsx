@@ -19,22 +19,10 @@ const Setting: React.FC = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      const {
-        _id: id,
-        email,
-        bg_music,
-        cover,
-        upload_type,
-        avatar,
-        name,
-        web_name,
-        address,
-        web_describe,
-        web_seo,
-      } = currentUser || {};
+      const { _id: id, comment, bg_music, cover, admin, web } = currentUser || {};
       form.setFieldsValue({
         _id: id,
-        email,
+        comment,
         bg_music,
         cover: {
           ...cover,
@@ -43,15 +31,13 @@ const Setting: React.FC = () => {
             url: cover?.image,
           },
         },
-        upload_type,
-        avatar: {
-          url: avatar,
+        admin: {
+          ...admin,
+          avatar: {
+            url: admin?.avatar,
+          },
         },
-        name,
-        web_name,
-        address,
-        web_describe,
-        web_seo,
+        web,
       });
       setLoading(false);
     }, 800);
@@ -61,35 +47,21 @@ const Setting: React.FC = () => {
     };
   }, []);
 
-  const onFinish = async ({
-    _id: id,
-    email,
-    bg_music,
-    cover,
-    upload_type,
-    avatar,
-    name,
-    web_name,
-    address,
-    web_describe,
-    web_seo,
-  }: any) => {
+  const onFinish = async ({ _id: id, comment, bg_music, cover, admin, web }: any) => {
     const params = {
       _id: id,
-      email,
+      comment,
       bg_music,
       cover: {
         ...cover,
         date: cover.date.format('YYYY-MM-DD HH:mm:ss'),
         image: cover?.image?.url || '',
       },
-      upload_type,
-      avatar: avatar?.url || '',
-      name,
-      web_name,
-      address,
-      web_describe,
-      web_seo,
+      admin: {
+        ...admin,
+        avatar: admin.avatar?.url || '',
+      },
+      web,
     };
 
     try {
@@ -124,7 +96,7 @@ const Setting: React.FC = () => {
       className={styles.setting}
       pageHeaderRender={() => (
         <>
-          <h2 className={styles.header}>网站信息</h2>
+          <h2 className={styles.header}>管理页面</h2>
         </>
       )}
     >
@@ -148,32 +120,38 @@ const Setting: React.FC = () => {
         </Form.Item>
         <Form.Item
           label="管理头像"
-          name="avatar"
+          name={['admin', 'avatar']}
           rules={[{ required: true, message: '请选择头像!' }]}
           wrapperCol={{ span: 3 }}
         >
           <UploadImage isAvatar />
         </Form.Item>
-        <Form.Item label="管理昵称" name="name" required>
+        <Form.Item label="管理昵称" name={['admin', 'name']} required>
           <Input placeholder="请填写" />
         </Form.Item>
-        <Form.Item label="网站昵称" name="web_name" required>
-          <Input placeholder="前台网站的网站名" />
-        </Form.Item>
-        <Form.Item label="网站地址" name="address" required>
-          <Input placeholder="网站的域名, 例如 http://baidu.com" />
-        </Form.Item>
-        <Form.Item label="网站描述" name="web_describe" required>
-          <Input placeholder="请填写" />
-        </Form.Item>
-        <Form.Item label="网站SEO" name="web_seo" required>
-          <Input placeholder="SEO关键词" />
-        </Form.Item>
-        <Form.Item label="文件上传" name="upload_type">
+
+        <Form.Item label="文件上传" name={['admin', 'upload_type']}>
           <Radio.Group>
             <Radio value={'1'}>服务器</Radio>
             <Radio value={'2'}>七牛KODO</Radio>
           </Radio.Group>
+        </Form.Item>
+
+        <h2 className={styles.header}>前台页面</h2>
+        <Form.Item label="网站地址" name={['web', 'address']} required>
+          <Input placeholder="网站的域名, 例如 http://baidu.com" />
+        </Form.Item>
+        <Form.Item label="网站名称" name={['web', 'name']} required>
+          <Input placeholder="前台网站的网站名" />
+        </Form.Item>
+        <Form.Item label="网站描述" name={['web', 'description']} required>
+          <Input placeholder="前台网站的描述" />
+        </Form.Item>
+        <Form.Item label="网站SEO" name={['web', 'seo']} required>
+          <Input placeholder="SEO关键词" />
+        </Form.Item>
+        <Form.Item label="备案号" name={['web', 'icp']} required>
+          <Input placeholder="网站的备案信息" />
         </Form.Item>
 
         <h2 className={styles.header}>首屏效果</h2>
@@ -227,29 +205,26 @@ const Setting: React.FC = () => {
           </Row>
         </Form.Item>
         <Form.Item label="标题" name={['cover', 'title']} required>
-          <Input placeholder="首页文章的标题" />
+          <Input placeholder="首屏文章的标题" />
         </Form.Item>
-        <Form.Item label="描述" name={['cover', 'describe']} required>
-          <Input placeholder="首页文章的描述" />
+        <Form.Item label="描述" name={['cover', 'description']} required>
+          <Input placeholder="首屏文章的描述" />
         </Form.Item>
         <Form.Item label="链接" name={['cover', 'link']} required>
-          <Input placeholder="前台首页链接，不填则没有链接功能" />
+          <Input placeholder="首屏文章链接，不填则没有链接功能" />
         </Form.Item>
         <Form.Item label="时间" name={['cover', 'date']} required>
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
-        <Form.Item label="备案号" name={['cover', 'icp']} required>
-          <Input placeholder="网站的备案信息" />
-        </Form.Item>
 
         <h2 className={styles.header}>评论信息</h2>
-        <Form.Item label="评论邮箱" name={['email', 'address']} required>
+        <Form.Item label="评论邮箱" name={['comment', 'email']} required>
           <Input placeholder="管理员评论的邮箱" />
         </Form.Item>
-        <Form.Item label="评论昵称" name={['email', 'name']} required>
+        <Form.Item label="评论昵称" name={['comment', 'name']} required>
           <Input placeholder="管理员评论的昵称" />
         </Form.Item>
-        <Form.Item label="评论标识" name={['email', 'mark']} required>
+        <Form.Item label="评论标识" name={['comment', 'mark']} required>
           <Input placeholder="前台评论的管理员标识" />
         </Form.Item>
 

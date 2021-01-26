@@ -10,7 +10,7 @@ type Cover = {
   title: string;
   date: string;
   link: string;
-  describe: string;
+  description: string;
   color: string;
   icp: string;
 };
@@ -21,25 +21,39 @@ type BgMusic = {
   mood: string;
 };
 
-type Email = {
-  address: string;
-  name: string;
-  mark: string;
-};
-
 declare namespace API {
   export type CurrentUser = {
-    email: Email;
-    bg_music: BgMusic;
-    cover: Cover;
+    comment: {
+      email: string;
+      name: string;
+      mark: string;
+    };
+    bg_music: {
+      about: string;
+      letter: string;
+      mood: string;
+    };
+    cover: {
+      image: string;
+      title: string;
+      date: string;
+      link: string;
+      description: string;
+      color: string;
+      icp: string;
+    };
+    admin: {
+      avatar: string;
+      name: string;
+      upload_type: string;
+    };
+    web: {
+      name: string;
+      address: string;
+      description: string;
+      seo: string;
+    };
     _id: string;
-    upload_type: string;
-    avatar: string;
-    name: string;
-    web_name: string;
-    address: string;
-    web_describe: string;
-    web_seo: string;
     __v: number;
   };
 
