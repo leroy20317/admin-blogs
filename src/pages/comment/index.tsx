@@ -1,8 +1,6 @@
 import React, {
   ChangeEvent,
-  FC,
   forwardRef,
-  ForwardRefExoticComponent,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -37,7 +35,7 @@ import moment from 'moment';
 import url from '@/utils/url';
 // import locale from 'antd/es/date-picker/locale/zh_CN';
 
-const ReplayModal: ForwardRefExoticComponent<any> = forwardRef((props, ref) => {
+const ReplayModal: React.ForwardRefExoticComponent<any> = forwardRef((props, ref) => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   const [isShow, setIsShow] = useState(false);
@@ -56,8 +54,8 @@ const ReplayModal: ForwardRefExoticComponent<any> = forwardRef((props, ref) => {
   };
 
   const submit = async () => {
-    if(!text.trim()){
-      message.error('请填写回复内容！')
+    if (!text.trim()) {
+      message.error('请填写回复内容！');
       return;
     }
 
@@ -73,15 +71,15 @@ const ReplayModal: ForwardRefExoticComponent<any> = forwardRef((props, ref) => {
       reply_email: data?.email,
       parent_id: data?.parent_id || data?.id,
       admin: true,
-      type: data?.type === 1 ? 2 : 3
-    }
+      type: data?.type === 1 ? 2 : 3,
+    };
     try {
       setSubmitting(true);
       const response = await replay(params);
       if (response.status === 'success') {
         message.success(response.message, 1);
         setTimeout(() => {
-          hide()
+          hide();
         }, 800);
       } else {
         message.error(response.message, 1);
@@ -89,10 +87,10 @@ const ReplayModal: ForwardRefExoticComponent<any> = forwardRef((props, ref) => {
       setTimeout(() => {
         setSubmitting(false);
       }, 800);
-    }catch (e) {
+    } catch (e) {
       console.log('e', e);
     }
-  }
+  };
 
   useImperativeHandle(ref, () => ({ show }));
 
@@ -111,7 +109,9 @@ const ReplayModal: ForwardRefExoticComponent<any> = forwardRef((props, ref) => {
           onChange={({ target }: ChangeEvent<HTMLTextAreaElement>) => setText(target.value)}
         />
         <div className={styles.footer}>
-          <Button type="primary" onClick={submit} loading={submitting}>提交评论</Button>
+          <Button type="primary" onClick={submit} loading={submitting}>
+            提交评论
+          </Button>
           <span className={styles.tip}>
             <SoundOutlined />
             文明用语, 弘扬中华文明传统美德
@@ -123,7 +123,7 @@ const ReplayModal: ForwardRefExoticComponent<any> = forwardRef((props, ref) => {
   );
 });
 
-const Comment: FC = () => {
+const Comment: React.FC = () => {
   const { data, getList, loading } = useModel('comment', (model) => ({
     data: model.data,
     getList: model.getList,
@@ -158,6 +158,7 @@ const Comment: FC = () => {
   const replayComment = (comment: API.Comment) => {
     replayRef?.current.show(comment);
   };
+
   // 删除评论
   const deleteItem = ({ id, parent_id }: API.Comment) => {
     del({ id, parent_id }).then((res) => {

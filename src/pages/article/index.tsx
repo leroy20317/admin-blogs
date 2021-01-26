@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Col, List, message, Popconfirm, Row, Space, Tooltip } from 'antd';
 import styles from './index.less';
@@ -10,12 +10,16 @@ import moment from 'moment';
 // import 'moment/locale/es-us';
 // import locale from 'antd/es/date-picker/locale/zh_CN';
 
-const Article: FC = () => {
-  const { data, getList, loading } = useModel('article', model => ({data: model.data, getList: model.getList, loading: model.loading}));
+const Article: React.FC = () => {
+  const { data, getList, loading } = useModel('article', (model) => ({
+    data: model.data,
+    getList: model.getList,
+    loading: model.loading,
+  }));
 
   useEffect(() => {
     getList({});
-  }, []);
+  }, [getList]);
 
   const pageChange = (page: number) => {
     getList({ page });
@@ -34,7 +38,7 @@ const Article: FC = () => {
     del({ id }).then((res) => {
       if (res.status === 'success') {
         message.success(res.message, 1);
-        pageChange(data.page || 1)
+        pageChange(data.page || 1);
       } else {
         message.error(res.message || '删除失败', 1);
       }
@@ -45,9 +49,7 @@ const Article: FC = () => {
     <PageContainer
       loading={loading}
       className={styles.article}
-      pageHeaderRender={() => (
-        <h2 className={styles.header}>文章列表 ({data?.total})</h2>
-      )}
+      pageHeaderRender={() => <h2 className={styles.header}>文章列表 ({data?.total})</h2>}
     >
       <List
         header={
@@ -75,7 +77,7 @@ const Article: FC = () => {
           total: data.total,
           onChange: pageChange,
         }}
-        renderItem={item => (
+        renderItem={(item) => (
           <List.Item>
             <Row>
               <Col span={12}>{item?.title}</Col>

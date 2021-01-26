@@ -66,7 +66,7 @@
     path: '/setting',
     name: 'setting',
     icon: 'icon-moon-night',
-    component: './home/index',
+    component: './setting/index',
   },
 
   {

@@ -41,18 +41,18 @@ export const dateDiff = (time: string) => {
   const minC = diffValue / minute;
 
   const map = {
-    [monthC]: "月",
-    [weekC]: "周",
-    [dayC]: "天",
-    [hourC]: "小时",
-    [minC]: "分钟",
-  }
+    [monthC]: '月',
+    [weekC]: '周',
+    [dayC]: '天',
+    [hourC]: '小时',
+    [minC]: '分钟',
+  };
 
   // eslint-disable-next-line no-restricted-syntax
   for (const i in map) {
     if (Number(i) >= 1) {
-      return `${parseInt(i, 10)}${map[i]}前`
+      return `${parseInt(i, 10)}${map[i]}前`;
     }
   }
   return '片刻之前';
-}
+};

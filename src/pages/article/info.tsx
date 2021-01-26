@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Col, DatePicker, Form, Input, message, Radio, Row, Switch } from 'antd';
 import styles from './info.less';
@@ -9,7 +9,7 @@ import moment from 'moment';
 import UploadImage from '@/components/Upload/UploadImage';
 import UploadMusic from '@/components/Upload/UploadMusic';
 
-const ArticleInfo: FC = () => {
+const ArticleInfo: React.FC = () => {
   const { id } = history.location.query || {};
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
@@ -40,7 +40,7 @@ const ArticleInfo: FC = () => {
           editor: {
             val: res?.content,
             html: res?.contentHtml,
-            length:res?.words,
+            length: res?.words,
           },
           time: res?.time && moment(res.time),
           describe: res?.describe,
@@ -65,7 +65,7 @@ const ArticleInfo: FC = () => {
     return () => {
       form.resetFields();
     };
-  }, []);
+  }, [id, form, getDetail]);
 
   const onFinish = async (values: any) => {
     const params = {
@@ -128,7 +128,6 @@ const ArticleInfo: FC = () => {
     >
       <Form
         form={form}
-        size="large"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         requiredMark={false}
@@ -137,33 +136,26 @@ const ArticleInfo: FC = () => {
           isUpload: true,
           hide: false,
         }}
+        labelCol={{ span: 2 }}
+        validateMessages={{
+          // eslint-disable-next-line no-template-curly-in-string
+          required: '${label}不能为空！',
+        }}
       >
-        <Form.Item
-          label="文章标题"
-          name="title"
-          rules={[{ required: true, message: '请填写标题!' }]}
-        >
+        <Form.Item label="文章标题" name="title" required>
           <Input placeholder="请填写标题" />
         </Form.Item>
         <Form.Item
           label="文章内容"
           name="editor"
-          rules={[{ required: true, transform: value => value?.html, message: '请填写内容!' }]}
+          rules={[{ required: true, transform: (value) => value?.html, message: '请填写内容!' }]}
         >
-          <Editor placeholder='请填写文章内容！' />
+          <Editor placeholder="请填写文章内容！" />
         </Form.Item>
-        <Form.Item
-          label="发布时间"
-          name="time"
-          rules={[{ required: true, message: '请选择发布时间!' }]}
-        >
+        <Form.Item label="发布时间" name="time" required>
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
-        <Form.Item
-          label="文章摘要"
-          name="describe"
-          rules={[{ required: true, message: '请填写文章摘要!' }]}
-        >
+        <Form.Item label="文章摘要" name="describe" required>
           <Input placeholder="请填写文章摘要" />
         </Form.Item>
         <Form.Item
@@ -199,11 +191,7 @@ const ArticleInfo: FC = () => {
                 </Row>
               ) : (
                 <>
-                  <Form.Item
-                    label="封面图片"
-                    name={['image', 'url']}
-                    rules={[{ required: true, message: '请填写封面图片!' }]}
-                  >
+                  <Form.Item label="封面图片" name={['image', 'url']} rules={[{ required: true }]}>
                     <Input placeholder="请填写封面图片链接" />
                   </Form.Item>
                   <Form.Item label="背景音乐" name={['music', 'url']}>
@@ -217,7 +205,7 @@ const ArticleInfo: FC = () => {
         <Form.Item valuePropName="checked" name="hide" label="隐藏文章">
           <Switch />
         </Form.Item>
-        <Form.Item>
+        <Form.Item wrapperCol={{ offset: 2 }}>
           <Button
             type="primary"
             htmlType="submit"

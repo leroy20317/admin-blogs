@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from './index.less'
+import styles from './index.less';
 
-interface Props {
-  currentUser?: API.CurrentUser
-}
+type Props = {
+  currentUser?: API.CurrentUser;
+};
 
 const MenuHeader = ({ currentUser }: Props) => {
   return (
@@ -14,6 +14,6 @@ const MenuHeader = ({ currentUser }: Props) => {
       <p className={styles.name}>{currentUser?.name}</p>
     </div>
   );
-}
+};
 
-export default MenuHeader
+export default MenuHeader;

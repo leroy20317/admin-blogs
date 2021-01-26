@@ -82,7 +82,7 @@ const Login: React.FC = () => {
       const { status, message: msg } = await loginUp(data);
       if (status === 'success') {
         message.success('创建账号成功，请登录！');
-        setIsCreate(false)
+        setIsCreate(false);
         setData({
           username: '',
           password: '',
@@ -124,7 +124,9 @@ const Login: React.FC = () => {
             <img alt="" src={login2} />
           </div>
           <img alt="" src={login0} />
-          <Button onClick={handleSubmit} loading={submitting}>sign in</Button>
+          <Button onClick={handleSubmit} loading={submitting}>
+            sign in
+          </Button>
           <span className={styles.add} onClick={() => setIsCreate(true)}>
             (sign up)
           </span>
@@ -133,8 +135,8 @@ const Login: React.FC = () => {
       <ul className={styles['bg-bubbles']}>
         {Array(10)
           .fill(1)
-          .map((_, index) => (
-            <li key={index + 1}></li>
+          .map((item, index) => (
+            <li key={index + item}></li>
           ))}
       </ul>
       <div className={styles.hint}>永远相信美好的事情即将发生...</div>
@@ -166,7 +168,9 @@ const Login: React.FC = () => {
               setData({ ...data, passwords: e.target.value })
             }
           />
-          <Button onClick={createSubmit} loading={submitting}>sign in</Button>
+          <Button onClick={createSubmit} loading={submitting}>
+            sign in
+          </Button>
 
           <p>
             <ExclamationCircleFilled className={styles['el-icon-warning']} />

@@ -1,12 +1,12 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button, Form, message } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import styles from './index.less';
 import { fetchMyself, postMyself } from '@/services/common';
 import Editor from '@/components/Editor';
 import { history } from 'umi';
 
-const Myself: FC = () => {
+const Myself: React.FC = () => {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -43,7 +43,7 @@ const Myself: FC = () => {
     return () => {
       form.resetFields();
     };
-  }, []);
+  }, [form, getMyself]);
 
   const onFinish = async ({ _id: id, editor }: any) => {
     const params = {
@@ -60,7 +60,7 @@ const Myself: FC = () => {
       if (response.status === 'success') {
         message.success(response.message, 1);
         setTimeout(() => {
-         history.push('/home')
+          history.push('/home');
         }, 800);
       } else {
         message.error(response.message, 1);
@@ -89,20 +89,19 @@ const Myself: FC = () => {
     >
       <Form
         form={form}
-        size="large"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         requiredMark={false}
         labelAlign="left"
       >
-        <Form.Item noStyle name='_id' hidden>
-          <input />
+        <Form.Item noStyle name="_id" hidden>
+          <Input />
         </Form.Item>
         <Form.Item
           name="editor"
-          rules={[{ required: true, message: '请填写内容!' }]}
+          rules={[{ required: true, transform: (value) => value?.html, message: '内容不能为空!' }]}
         >
-          <Editor height={600} placeholder='请填写自我介绍！' />
+          <Editor height={600} placeholder="请填写自我介绍！" />
         </Form.Item>
         <Form.Item>
           <Button

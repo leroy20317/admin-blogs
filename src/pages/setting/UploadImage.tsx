@@ -1,43 +1,58 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Image, message, Upload } from 'antd';
-import { LoadingOutlined, PictureOutlined } from '@ant-design/icons';
+import { LoadingOutlined, PictureOutlined, PlusOutlined } from '@ant-design/icons';
 import { useModel } from '@@/plugin-model/useModel';
 import url from '@/utils/url';
 import ImgCrop from 'antd-img-crop';
 import 'antd-img-crop/src/index.less';
 import 'antd/es/modal/style';
 import 'antd/es/slider/style';
+import styles from './index.less';
 
-const Img = ({
-  status,
-  response,
-  filename,
-}: {
+interface ImgProps {
   status: string;
-  response: { body: { url: string; filename: string } };
+  response: {
+    body: {
+      url: string;
+      filename: string;
+    };
+  };
   filename: string;
-}) => {
+}
+
+const AvatarImg: FC<ImgProps> = ({ status, response }) => {
+  switch (status) {
+    case 'done':
+      return <Image src={response?.body?.url} preview={false} />;
+    case 'uploading':
+      return <LoadingOutlined />;
+    default:
+      return <PlusOutlined className={styles.plus} />;
+  }
+};
+
+const Img: FC<ImgProps> = ({ status, response, filename }) => {
   switch (status) {
     case 'done':
       return <Image src={response.body.url} width="95%" preview={false} />;
     case 'uploading':
       return (
-        <>
+        <div>
           <p className="ant-upload-drag-icon">
             <LoadingOutlined />
           </p>
           <p className="ant-upload-text">{filename}</p>
-        </>
+        </div>
       );
     default:
       return (
-        <>
+        <div>
           <p className="ant-upload-drag-icon">
             <PictureOutlined />
           </p>
-          <p className="ant-upload-text">封面图片 (680*440)</p>
+          <p className="ant-upload-text">封面图片 (1920*1080)</p>
           <p className="ant-upload-hint">Click or drag file to this area to upload.</p>
-        </>
+        </div>
       );
   }
 };
@@ -45,9 +60,10 @@ const Img = ({
 interface Props {
   value?: any;
   onChange?: (...agm: any[]) => void;
+  isAvatar?: boolean;
 }
 
-const UploadImage = ({ value, onChange }: Props) => {
+const UploadImage = ({ value, onChange, isAvatar }: Props) => {
   const getInitList = () => {
     if (!value) return [];
     return [{ status: 'done', response: { body: value }, filename: value.filename }];
@@ -57,13 +73,14 @@ const UploadImage = ({ value, onChange }: Props) => {
   const { currentUser } = initialState || {};
 
   return (
-    <ImgCrop aspect={680 / 440}>
+    <ImgCrop aspect={isAvatar ? 1 : 1920 / 1080} shape={isAvatar ? 'round' : 'rect'}>
       <Upload.Dragger
         accept="image/*"
         name="file"
         multiple={false}
         action={url.upload}
         fileList={fileList}
+        className={isAvatar ? styles.avatar : styles.bg}
         beforeUpload={(file: any) => {
           let result = true;
           const { size } = file;
@@ -98,7 +115,9 @@ const UploadImage = ({ value, onChange }: Props) => {
           setFileList(list);
         }}
       >
-        <Img {...fileList[0]} />
+        <div className={styles.box}>
+          {isAvatar ? <AvatarImg {...fileList[0]} /> : <Img {...fileList[0]} />}
+        </div>
       </Upload.Dragger>
     </ImgCrop>
   );

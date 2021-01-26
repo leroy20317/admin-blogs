@@ -1,30 +1,28 @@
 import { request } from 'umi';
 import url from '@/utils/url';
 
-interface Params {
-  id?: number|string;
-  [key: string]: any
+interface Params extends GlobalObject {
+  id?: number | string;
 }
-
 
 export async function fetch({ id, ...params }: any) {
   return request(`${url.envelope}/${id || ''}`, {
     method: 'get',
-    params
+    params,
   });
 }
 
-export async function update({ id, data }: {id: any, data: object}) {
+export async function update({ id, data }: { id: any; data: GlobalObject }) {
   return request(`${url.envelope}/${id || ''}`, {
     method: 'post',
-    data
+    data,
   });
 }
 
 export async function create(data: Params) {
   return request(url.envelope, {
     method: 'post',
-    data
+    data,
   });
 }
 
@@ -33,4 +31,3 @@ export async function del({ id }: Params) {
     method: 'delete',
   });
 }
-

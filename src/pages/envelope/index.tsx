@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Col, List, message, Popconfirm, Row, Space, Tooltip, Typography } from 'antd';
 import styles from './index.less';
@@ -8,7 +8,7 @@ import { del } from '@/services/envelope';
 import moment from 'moment';
 // import locale from 'antd/es/date-picker/locale/zh_CN';
 
-const Envelope: FC = () => {
+const Envelope: React.FC = () => {
   const { data, getList, loading } = useModel('envelope', (model) => ({
     data: model.data,
     getList: model.getList,
@@ -17,7 +17,7 @@ const Envelope: FC = () => {
 
   useEffect(() => {
     getList({});
-  }, []);
+  }, [getList]);
 
   const pageChange = (page: number) => {
     getList({ page });
@@ -32,7 +32,7 @@ const Envelope: FC = () => {
     del({ id }).then((res) => {
       if (res.status === 'success') {
         message.success(res.message, 1);
-        pageChange(data.page || 1)
+        pageChange(data.page || 1);
       } else {
         message.error(res.message || '删除失败', 1);
       }
@@ -43,9 +43,7 @@ const Envelope: FC = () => {
     <PageContainer
       loading={loading}
       className={styles.envelope}
-      pageHeaderRender={() => (
-        <h2 className={styles.header}>短语列表 ({data?.total})</h2>
-      )}
+      pageHeaderRender={() => <h2 className={styles.header}>短语列表 ({data?.total})</h2>}
     >
       <List
         header={

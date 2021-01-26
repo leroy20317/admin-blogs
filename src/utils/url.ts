@@ -12,9 +12,9 @@ const Url = {
 
   login: `${domain}/login`, // 登录
   user: `${domain}/user`, // 创建用户
-  userInfo: `${domain}/user-info`, // 个人信息
+  dashboard: `${domain}/dashboard`, // 主页仪表盘
   password: `${domain}/password`, // 重置密码
-  info: `${domain}/info`, // 首页信息
+  info: `${domain}/info`, // 用户信息
   article: `${domain}/article`, // 文章
   envelope: `${domain}/envelope`, // 短语
   myself: `${domain}/myself`, // 关于我

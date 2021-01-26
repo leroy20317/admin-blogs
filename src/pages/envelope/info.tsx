@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, DatePicker, Form, message } from 'antd';
 import styles from './info.less';
@@ -7,7 +7,7 @@ import { create, fetch, update } from '@/services/envelope';
 import Editor from '@/components/Editor';
 import moment from 'moment';
 
-const EnvelopeInfo: FC = () => {
+const EnvelopeInfo: React.FC = () => {
   const { id } = history.location.query || {};
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
@@ -47,7 +47,7 @@ const EnvelopeInfo: FC = () => {
     return () => {
       form.resetFields();
     };
-  }, []);
+  }, [id, form, getDetail]);
 
   const onFinish = async (values: any) => {
     const params = {
@@ -99,27 +99,27 @@ const EnvelopeInfo: FC = () => {
     >
       <Form
         form={form}
-        size="large"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         requiredMark={false}
         labelAlign="left"
+        labelCol={{ span: 2 }}
+        validateMessages={{
+          // eslint-disable-next-line no-template-curly-in-string
+          required: '${label}不能为空！',
+        }}
       >
         <Form.Item
           label="短语内容"
           name="editor"
-          rules={[{ required: true, message: '请填写内容!' }]}
+          rules={[{ required: true, transform: (value) => value?.html, message: '请填写内容!' }]}
         >
-          <Editor placeholder='请填写短语！' />
+          <Editor placeholder="请填写短语！" />
         </Form.Item>
-        <Form.Item
-          label="发布时间"
-          name="time"
-          rules={[{ required: true, message: '请选择发布时间!' }]}
-        >
+        <Form.Item label="发布时间" name="time" required>
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
-        <Form.Item>
+        <Form.Item wrapperCol={{ offset: 2 }}>
           <Button
             type="primary"
             htmlType="submit"

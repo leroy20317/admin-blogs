@@ -5,7 +5,14 @@ import styles from './index.less';
 import url from '@/utils/url';
 import { useModel } from 'umi';
 
-const Editor = ({ value, onChange, height, placeholder }: { value?: any; onChange?: Function, height?: number, placeholder?: string }) => {
+interface Props {
+  value?: any;
+  onChange?: (...agm: any[]) => void;
+  height?: number;
+  placeholder?: string;
+}
+
+const Editor = ({ value, onChange, height, placeholder }: Props) => {
   const { initialState } = useModel('@@initialState');
   const [vditorEditor, setVditor] = useState<any>(null);
   const ref = useRef<any>(null);

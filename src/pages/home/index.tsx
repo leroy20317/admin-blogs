@@ -10,14 +10,14 @@ const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_2341199_zo7uq67jsvq.js',
 });
 
-const Home = () => {
-  const { info: data, getInfo, loading } = useModel('info');
+const Home: React.FC = () => {
+  const { info: data, getInfo, loading } = useModel('dashboard');
 
   const year = new Date().getFullYear();
 
   useEffect(() => {
-    getInfo()
-  }, [])
+    getInfo();
+  }, [getInfo]);
 
   return (
     <>
@@ -74,12 +74,12 @@ const Home = () => {
           <Col span={12}>
             <Card title={<h3 className={styles.title}>article</h3>} bordered={false}>
               <p>
-                <span className={styles.total}>{data?.article ? data?.articleQty : 0}</span>
+                <span className={styles.total}>{data?.article.length || 0}</span>
                 <span>篇</span>
               </p>
               <p>
                 {data?.article
-                  ? `${dateDiff(data?.article?.time)} 发布了新的心情，继续加油哦！`
+                  ? `${dateDiff(data.article?.last.time)} 发布了新的心情，继续加油哦！`
                   : '快来发布新文章啦'}
               </p>
             </Card>
@@ -87,7 +87,7 @@ const Home = () => {
           <Col span={12}>
             <Card title={<h3 className={styles.title}>comment</h3>} bordered={false}>
               <p>
-                <span className={styles.total}>{data?.article ? data?.commentQty : 0}</span>
+                <span className={styles.total}>{data?.comment.length || 0}</span>
                 <span>条</span>
               </p>
               <p>过去的时间里，收获了些许陌生的美好。</p>
@@ -97,10 +97,10 @@ const Home = () => {
             <Card title={<h3 className={styles.title}>envelope</h3>} bordered={false}>
               <div className={styles.envelope}>
                 {data?.envelope ? (
-                  data.envelope.map((item, index) => (
-                    <p className={styles.item} key={index + 1}>
+                  data.envelope.map(({ _id: id, contentHtml }, index) => (
+                    <p className={styles.item} key={id}>
                       <span>{index + 1}</span>
-                      {item.contentHtml.replace(/<[^>]+>/gi, '')}
+                      {contentHtml.replace(/<[^>]+>/gi, '')}
                     </p>
                   ))
                 ) : (

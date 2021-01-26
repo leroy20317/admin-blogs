@@ -4,7 +4,7 @@ import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
 
-const { REACT_APP_ENV, NODE_ENV } = process.env;
+const { REACT_APP_ENV, NODE_ENV, npm_package_name } = process.env;
 
 export default defineConfig({
   hash: true,
@@ -44,7 +44,7 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-  publicPath: NODE_ENV === 'production' ? '//cdn7.leroy.net.cn/admin-blogs/dist/' : '/',
+  publicPath: NODE_ENV === 'production' ? `https://cdn.leroy.net.cn/${npm_package_name}/` : '/',
   terserOptions: {
     compress: {
       drop_console: true,

@@ -11,6 +11,7 @@ declare module '*.gif';
 declare module '*.bmp';
 declare module '*.tiff';
 declare module 'omit.js';
+declare module 'react-color';
 
 // google analytics interface
 type GAFieldsObject = {
@@ -19,6 +20,10 @@ type GAFieldsObject = {
   eventLabel?: string;
   eventValue?: number;
   nonInteraction?: boolean;
+};
+
+type GlobalObject = {
+  [key: string]: any;
 };
 
 type Window = {

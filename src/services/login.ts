@@ -1,11 +1,11 @@
 import { request } from 'umi';
-import url from '@/utils/url'
+import url from '@/utils/url';
 
 export type LoginParamsType = {
-  username: string,
-  password: string,
-  passwords?: string
-}
+  username: string;
+  password: string;
+  passwords?: string;
+};
 
 export async function loginIn(params: LoginParamsType) {
   return request(url.login, {

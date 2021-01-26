@@ -1,11 +1,12 @@
 {
-  "name": "ant-design-pro",
-  "version": "5.0.0-beta.2",
+  "name": "admin-blogs",
+  "version": "2.0.0",
   "private": true,
-  "description": "An out-of-box UI solution for enterprise applications",
+  "description": "admin for blogs",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
+    "publish": "umi build && node kodo.js",
     "deploy": "npm run site && npm run gh-pages",
     "dev": "npm run start:dev",
     "gh-pages": "gh-pages -d dist",
@@ -59,6 +60,7 @@
     "omit.js": "^2.0.2",
     "qs": "^6.9.0",
     "react": "^17.0.0",
+    "react-color": "^2.19.3",
     "react-dev-inspector": "^1.1.1",
     "react-dom": "^17.0.0",
     "react-helmet-async": "^1.0.4",
@@ -100,7 +102,10 @@
     "pro-download": "1.0.1",
     "puppeteer-core": "^5.0.0",
     "stylelint": "^13.0.0",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.3",
+    "co": "^4.6.0",
+    "qiniu": "^7.3.2",
+    "rd": "^2.0.1"
   },
   "engines": {
     "node": ">=10.0.0"

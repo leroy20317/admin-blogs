@@ -24,7 +24,7 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const { body, status } = await queryCurrent();
-      if(status === 'success'){
+      if (status === 'success') {
         return body;
       }
     } catch (error) {
@@ -48,8 +48,9 @@ export async function getInitialState(): Promise<{
 }
 
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
-  const {currentUser} = initialState || {};
+  const { currentUser } = initialState || {};
   return {
+    collapsedWidth: 100,
     siderWidth: 200,
     rightContentRender: () => null,
     disableContentMargin: false,
@@ -61,7 +62,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         history.push('/user/login');
       }
     },
-    menuHeaderRender: () => (<MenuHeader currentUser={currentUser} />),
+    menuHeaderRender: () => <MenuHeader currentUser={currentUser} />,
     headerRender: false,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
@@ -126,7 +127,10 @@ export const request: RequestConfig = {
     (url, options) => {
       const { headers } = options;
       return {
-        options: { ...options, headers: {...headers, Authorization: `Bearer ${localStorage.getItem('Authorization')}`} },
+        options: {
+          ...options,
+          headers: { ...headers, Authorization: `Bearer ${localStorage.getItem('Authorization')}` },
+        },
       };
     },
   ],

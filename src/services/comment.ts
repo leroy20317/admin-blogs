@@ -1,23 +1,21 @@
 import { request } from 'umi';
 import url from '@/utils/url';
 
-interface Params {
-  id?: number|string;
-  [key: string]: any
+interface Params extends GlobalObject {
+  id?: number | string;
 }
-
 
 export async function fetch({ id, ...params }: any) {
   return request(`${url.comment}/${id || ''}`, {
     method: 'get',
-    params
+    params,
   });
 }
 
-export async function replay(data: object) {
+export async function replay(data: GlobalObject) {
   return request(url.comment, {
     method: 'post',
-    data
+    data,
   });
 }
 
@@ -27,11 +25,9 @@ export async function read() {
   });
 }
 
-
 export async function del(params: Params) {
   return request(`${url.comment}`, {
     method: 'delete',
-    data: params
+    data: params,
   });
 }
-

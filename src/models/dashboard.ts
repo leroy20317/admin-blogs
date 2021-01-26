@@ -1,16 +1,16 @@
 import { useState, useCallback } from 'react';
-import { fetch } from '@/services/article';
+import { fetchDashboard } from '@/services/common';
 
-export default function useArticleModel() {
-  const [data, setData] = useState<API.ArticleList>({ total: 0, data: [], page: 1 });
+export default function useDashboardModel() {
+  const [info, setInfo] = useState<API.Dashboard>();
   const [loading, setLoading] = useState(true);
 
-  const getList = useCallback((params) => {
+  const getInfo = useCallback(() => {
     setLoading(true);
-    fetch(params)
+    fetchDashboard()
       .then((res) => {
         if (res.status === 'success') {
-          setData(res.body);
+          setInfo(res.body);
         }
       })
       .finally(() => {
@@ -21,8 +21,8 @@ export default function useArticleModel() {
   }, []);
 
   return {
-    data,
-    getList,
+    info,
+    getInfo,
     loading,
   };
 }
