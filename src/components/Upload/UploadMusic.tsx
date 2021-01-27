@@ -12,7 +12,13 @@ interface Props {
 const UploadMusic = ({ value, onChange }: Props) => {
   const getInitList = () => {
     if (!value) return [];
-    return [{ status: 'done', response: { body: value }, filename: value.filename }];
+    return [
+      {
+        status: 'done',
+        response: { body: value },
+        filename: value.filename || value.url?.split('/').pop(),
+      },
+    ];
   };
   const [fileList, setFileList] = useState<any[]>(getInitList());
   const { initialState } = useModel('@@initialState');
@@ -38,7 +44,7 @@ const UploadMusic = ({ value, onChange }: Props) => {
         Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
       }}
       data={{
-        type: currentUser?.upload_type || '',
+        type: currentUser?.admin.upload_type || '',
       }}
       showUploadList={false}
       onChange={(info) => {
@@ -62,7 +68,13 @@ const UploadMusic = ({ value, onChange }: Props) => {
       <p className="ant-upload-drag-icon">
         <CustomerServiceOutlined />
       </p>
-      <p className="ant-upload-text">{fileList?.[0]?.response?.filename || '背景音乐'}</p>
+      <p className="ant-upload-text">
+        {fileList?.[0]?.filename ? (
+          <span style={{ color: '#1890ff' }}>{fileList?.[0]?.filename}</span>
+        ) : (
+          '背景音乐'
+        )}
+      </p>
       <p className="ant-upload-hint">Click or drag file to this area to upload.</p>
     </Upload.Dragger>
   );

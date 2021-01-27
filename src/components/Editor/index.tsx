@@ -55,7 +55,7 @@ const Editor = ({ value, onChange, height, placeholder }: Props) => {
           Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
         },
         extraData: {
-          type: currentUser?.upload_type || '',
+          type: currentUser?.admin.upload_type || '',
         },
         fieldName: 'file',
         success: (editor, msg) => {

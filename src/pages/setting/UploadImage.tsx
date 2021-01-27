@@ -94,7 +94,7 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
           Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
         }}
         data={{
-          type: currentUser?.upload_type || '',
+          type: currentUser?.admin.upload_type || '',
         }}
         showUploadList={false}
         onChange={(info) => {
