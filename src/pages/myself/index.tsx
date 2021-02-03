@@ -17,7 +17,7 @@ const Myself: React.FC = () => {
       fetchMyself()
         .then((res) => {
           if (res.status === 'success') {
-            resolve(res.body);
+            resolve(res.body || {});
           }
         })
         .finally(() => {
@@ -35,7 +35,7 @@ const Myself: React.FC = () => {
         editor: {
           val: content,
           html: contentHtml,
-          length: content.length,
+          length: content?.length,
         },
       });
     });

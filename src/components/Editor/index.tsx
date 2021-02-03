@@ -48,14 +48,11 @@ const Editor = ({ value, onChange, height, placeholder }: Props) => {
         },
       },
       upload: {
-        url: url.upload,
+        url: `${url.upload}/${currentUser?.upload_type}`,
         multiple: false,
         accept: 'audio/*,video/*,image/*',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
-        },
-        extraData: {
-          type: currentUser?.admin.upload_type || '',
         },
         fieldName: 'file',
         success: (editor, msg) => {

@@ -85,15 +85,11 @@ const Envelope: React.FC = () => {
               <Col span={3} offset={1}>
                 <Space align="start" size="middle">
                   <Tooltip title="Edit Envelope">
-                    {/* eslint-disable-next-line no-underscore-dangle */}
                     <EditOutlined className={styles.icon} onClick={() => edit(item._id)} />
                   </Tooltip>
                   <Popconfirm
                     title="是否删除该短语?"
-                    onConfirm={
-                      // eslint-disable-next-line no-underscore-dangle
-                      () => deleteItem(item._id)
-                    }
+                    onConfirm={() => deleteItem(item._id)}
                     okText="确定"
                     cancelText="取消"
                   >

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, DatePicker, Form, Input, message, Radio, Row, Col, Tooltip } from 'antd';
 import styles from './index.less';
-import { postInfo } from '@/services/common';
+import { postInfo, fetchInfo } from '@/services/common';
 import { history, useModel } from 'umi';
 import UploadImage from './UploadImage';
 import ColorPicker from '@/components/ColorPicker';
@@ -18,29 +18,42 @@ const Setting: React.FC = () => {
   const tooltipParent: React.RefObject<any> = useRef();
 
   useEffect(() => {
-    setTimeout(() => {
-      const { _id: id, comment, bg_music, cover, admin, web } = currentUser || {};
-      form.setFieldsValue({
-        _id: id,
-        comment,
-        bg_music,
-        cover: {
-          ...cover,
-          date: moment(cover?.date),
-          image: {
-            url: cover?.image,
-          },
-        },
-        admin: {
-          ...admin,
-          avatar: {
-            url: admin?.avatar,
-          },
-        },
-        web,
-      });
+    if (currentUser?.name) {
+      // 填写过相关信息
+      fetchInfo()
+        .then((res) => {
+          if (res.status === 'success') {
+            const { _id: id, comment, bg_music, cover, admin, web } = res.body;
+            form.setFieldsValue({
+              _id: id,
+              comment,
+              bg_music,
+              cover: {
+                ...cover,
+                date: moment(cover?.date),
+                image: {
+                  url: cover?.image,
+                },
+              },
+              admin: {
+                ...admin,
+                avatar: {
+                  url: admin?.avatar,
+                },
+              },
+              web,
+            });
+          }
+        })
+        .catch((err) => {
+          message.error(err.message || '网络错误！');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
       setLoading(false);
-    }, 800);
+    }
 
     return () => {
       form.resetFields();
@@ -108,7 +121,9 @@ const Setting: React.FC = () => {
         labelCol={{ span: 3 }}
         wrapperCol={{ span: 19 }}
         initialValues={{
-          upload_type: '1',
+          admin: {
+            upload_type: '1',
+          },
         }}
         validateMessages={{
           // eslint-disable-next-line no-template-curly-in-string
@@ -132,8 +147,8 @@ const Setting: React.FC = () => {
 
         <Form.Item label="文件上传" name={['admin', 'upload_type']}>
           <Radio.Group>
-            <Radio value={'1'}>服务器</Radio>
-            <Radio value={'2'}>七牛KODO</Radio>
+            <Radio value={1}>服务器</Radio>
+            <Radio value={2}>七牛KODO</Radio>
           </Radio.Group>
         </Form.Item>
 
@@ -176,14 +191,14 @@ const Setting: React.FC = () => {
                 noStyle
                 shouldUpdate={(prevValues, nextValues) => {
                   return (
-                    prevValues?.cover?.image.url !== nextValues?.cover?.image.url ||
+                    prevValues?.cover?.image?.url !== nextValues?.cover?.image?.url ||
                     prevValues?.cover?.color !== nextValues?.cover?.color
                   );
                 }}
               >
                 {() => {
                   const { cover } = form.getFieldsValue() || {};
-                  if (!cover?.color && !cover?.image.url) return null;
+                  if (!cover?.color && !cover?.image?.url) return null;
                   return (
                     <Tooltip
                       color="#fff"

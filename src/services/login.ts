@@ -15,7 +15,7 @@ export async function loginIn(params: LoginParamsType) {
 }
 
 export async function loginUp(params: LoginParamsType) {
-  return request(url.user, {
+  return request(url.register, {
     method: 'POST',
     data: params,
   });

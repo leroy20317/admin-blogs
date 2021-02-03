@@ -14,7 +14,7 @@ export async function fetch({ id, ...params }: any) {
 
 export async function update({ id, data }: { id: any; data: GlobalObject }) {
   return request(`${url.envelope}/${id || ''}`, {
-    method: 'post',
+    method: 'put',
     data,
   });
 }

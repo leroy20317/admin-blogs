@@ -78,7 +78,7 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
         accept="image/*"
         name="file"
         multiple={false}
-        action={url.upload}
+        action={`${url.upload}/${currentUser?.upload_type || 1}`}
         fileList={fileList}
         className={isAvatar ? styles.avatar : styles.bg}
         beforeUpload={(file: any) => {
@@ -92,9 +92,6 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
         }}
         headers={{
           Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
-        }}
-        data={{
-          type: currentUser?.admin.upload_type || '',
         }}
         showUploadList={false}
         onChange={(info) => {

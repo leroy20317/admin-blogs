@@ -10,18 +10,16 @@ const Url = {
   staticHost: prod ? '//cdn.leroy.net.cn/admin-blogs/dist/' : '/',
   // staticHost: '//static.leroy.net.cn/',
 
-  login: `${domain}/login`, // 登录
-  user: `${domain}/user`, // 创建用户
-  dashboard: `${domain}/dashboard`, // 主页仪表盘
-  password: `${domain}/password`, // 重置密码
-  info: `${domain}/info`, // 用户信息
+  login: `${domain}/user/login`, // 登录
+  register: `${domain}/user/register`, // 创建用户
+  userInfo: `${domain}/user/info`, // 用户信息
+  home: `${domain}/home`, // 主页数据
   article: `${domain}/article`, // 文章
   envelope: `${domain}/envelope`, // 短语
-  myself: `${domain}/myself`, // 关于我
+  myself: `${domain}/about`, // 关于我
+  info: `${domain}/info`, // 用户信息
   comment: `${domain}/comment`, // 评论
-  comment_read: `${domain}/comment_read`, // 评论已读
-  article_like: `${domain}/article_like`, // 点赞
-  upload: `${domain}/upload`, // 上传
-  delete_file: `${domain}/delete_file`, // 删除文件
+  upload: `${domain}/file/upload`, // 上传
+  delete_file: `${domain}/file/delete`, // 删除文件
 };
 export default Url;

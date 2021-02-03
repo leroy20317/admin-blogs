@@ -35,93 +35,89 @@ import moment from 'moment';
 import url from '@/utils/url';
 // import locale from 'antd/es/date-picker/locale/zh_CN';
 
-const ReplayModal: React.ForwardRefExoticComponent<any> = forwardRef((props, ref) => {
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
-  const [isShow, setIsShow] = useState(false);
-  const [data, setData] = useState<API.Comment | undefined>(undefined);
-  const [text, setText] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+const ReplayModal: React.ForwardRefExoticComponent<any> = forwardRef<any, { reload: Function }>(
+  ({ reload }, ref) => {
+    const { initialState } = useModel('@@initialState');
+    const { currentUser } = initialState || {};
+    const [isShow, setIsShow] = useState(false);
+    const [data, setData] = useState<API.Comment | undefined>(undefined);
+    const [text, setText] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
-  const show = (comment: API.Comment) => {
-    setIsShow(true);
-    setData(comment);
-  };
-
-  const hide = () => {
-    setIsShow(false);
-    setData(undefined);
-  };
-
-  const submit = async () => {
-    if (!text.trim()) {
-      message.error('请填写回复内容！');
-      return;
-    }
-
-    const params = {
-      name: currentUser?.comment.name,
-      email: currentUser?.comment.email,
-      content: text,
-      time: moment().format('YYYY-MM-DD HH:mm:ss'),
-      image: 1,
-      status: 2,
-      topic_id: data?.topic_id,
-      reply_name: data?.name,
-      reply_email: data?.email,
-      parent_id: data?.parent_id || data?.id,
-      admin: true,
-      type: data?.type === 1 ? 2 : 3,
+    const show = (comment: API.Comment) => {
+      setIsShow(true);
+      setData(comment);
     };
-    try {
-      setSubmitting(true);
-      const response = await replay(params);
-      if (response.status === 'success') {
-        message.success(response.message, 1);
-        setTimeout(() => {
-          hide();
-        }, 800);
-      } else {
-        message.error(response.message, 1);
+
+    const hide = () => {
+      setIsShow(false);
+      setData(undefined);
+    };
+
+    const submit = async () => {
+      if (!text.trim()) {
+        message.error('请填写回复内容！');
+        return;
       }
-      setTimeout(() => {
-        setSubmitting(false);
-      }, 800);
-    } catch (e) {
-      console.log('e', e);
-    }
-  };
 
-  useImperativeHandle(ref, () => ({ show }));
+      const params = {
+        content: text,
+        reply_name: data?.name,
+        reply_email: data?.email,
+      };
+      try {
+        setSubmitting(true);
+        const response = await replay(data?._id, params);
+        if (response.status === 'success') {
+          message.success(response.message, 1);
+          setTimeout(() => {
+            hide();
+          }, 800);
+        } else {
+          message.error(response.message, 1);
+        }
+        setTimeout(() => {
+          setSubmitting(false);
+          if (reload) {
+            reload();
+          }
+        }, 800);
+      } catch (e) {
+        console.log('e', e);
+      }
+    };
 
-  return (
-    <div className={`${styles.commentForm} ${isShow ? styles.active : ''}`}>
-      <div className={styles.content}>
-        <div className={styles.img}>
-          <img src={currentUser?.admin.avatar} alt="" />
+    useImperativeHandle(ref, () => ({ show }));
+
+    return (
+      <div className={`${styles.commentForm} ${isShow ? styles.active : ''}`}>
+        <div className={styles.content}>
+          <div className={styles.img}>
+            <img src={currentUser?.avatar} alt="" />
+          </div>
+          <p className={styles.name}>回复：{data?.name}</p>
+          <Input.TextArea
+            placeholder="请输入内容"
+            rows={5}
+            showCount
+            maxLength={100}
+            onChange={({ target }: ChangeEvent<HTMLTextAreaElement>) => setText(target.value)}
+          />
+          <div className={styles.footer}>
+            <Button type="primary" onClick={submit} loading={submitting}>
+              提交评论
+            </Button>
+            <span className={styles.tip}>
+              <SoundOutlined />
+              文明用语, 弘扬中华文明传统美德
+            </span>
+          </div>
+          <CloseCircleOutlined className={styles.close} onClick={hide} />
         </div>
-        <p className={styles.name}>回复：{data?.name}</p>
-        <Input.TextArea
-          placeholder="请输入内容"
-          rows={5}
-          showCount
-          maxLength={100}
-          onChange={({ target }: ChangeEvent<HTMLTextAreaElement>) => setText(target.value)}
-        />
-        <div className={styles.footer}>
-          <Button type="primary" onClick={submit} loading={submitting}>
-            提交评论
-          </Button>
-          <span className={styles.tip}>
-            <SoundOutlined />
-            文明用语, 弘扬中华文明传统美德
-          </span>
-        </div>
-        <CloseCircleOutlined className={styles.close} onClick={hide} />
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 
 const Comment: React.FC = () => {
   const { data, getList, loading } = useModel('comment', (model) => ({
@@ -144,7 +140,8 @@ const Comment: React.FC = () => {
 
   // 一键已读
   const onRead = () => {
-    read().then(() => {
+    const ids = data.data.map((item) => item._id);
+    read(ids).then(() => {
       pageChange(data.page || 1);
     });
   };
@@ -160,8 +157,8 @@ const Comment: React.FC = () => {
   };
 
   // 删除评论
-  const deleteItem = ({ id, parent_id }: API.Comment) => {
-    del({ id, parent_id }).then((res) => {
+  const deleteItem = (id: string) => {
+    del(id).then((res) => {
       if (res.status === 'success') {
         message.success(res.message, 1);
         pageChange(data.page || 1);
@@ -238,7 +235,7 @@ const Comment: React.FC = () => {
               <Col span={3} offset={1}>
                 <Space align="start" size="middle">
                   <Tooltip title="View Article">
-                    <EyeOutlined className={styles.icon} onClick={() => view(item.topic_id)} />
+                    <EyeOutlined className={styles.icon} onClick={() => view(item.article_id)} />
                   </Tooltip>
                   <Tooltip title="Replay Comment">
                     <MessageOutlined className={styles.icon} onClick={() => replayComment(item)} />
@@ -247,7 +244,7 @@ const Comment: React.FC = () => {
                     title={
                       item.parent_id ? '是否删除该评论?' : '当前为一级评论, 会连同子评论一块删除哦~'
                     }
-                    onConfirm={() => deleteItem(item)}
+                    onConfirm={() => deleteItem(item._id)}
                     okText="确定"
                     cancelText="取消"
                   >
@@ -259,7 +256,7 @@ const Comment: React.FC = () => {
           </List.Item>
         )}
       />
-      <ReplayModal ref={replayRef} />
+      <ReplayModal ref={replayRef} reload={() => getList({ page: data.page })} />
     </PageContainer>
   );
 };

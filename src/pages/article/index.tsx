@@ -26,7 +26,7 @@ const Article: React.FC = () => {
   };
 
   // 新窗口打开文章
-  const view = (id: number) => {
+  const view = (id: string) => {
     window.open(`${url.webHost}/${id}`);
   };
   // 编辑文章
@@ -87,18 +87,14 @@ const Article: React.FC = () => {
               <Col span={4} offset={2}>
                 <Space align="start" size="middle">
                   <Tooltip title="View Article">
-                    <EyeOutlined className={styles.icon} onClick={() => view(item.id)} />
+                    <EyeOutlined className={styles.icon} onClick={() => view(item._id)} />
                   </Tooltip>
                   <Tooltip title="Edit Article">
-                    {/* eslint-disable-next-line no-underscore-dangle */}
                     <EditOutlined className={styles.icon} onClick={() => edit(item._id)} />
                   </Tooltip>
                   <Popconfirm
                     title="是否删除该文章?"
-                    onConfirm={
-                      /* eslint-disable-next-line no-underscore-dangle */
-                      () => deleteItem(item._id)
-                    }
+                    onConfirm={() => deleteItem(item._id)}
                     okText="确定"
                     cancelText="取消"
                   >

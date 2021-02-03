@@ -1,13 +1,13 @@
 import { useState, useCallback } from 'react';
-import { fetchDashboard } from '@/services/common';
+import { fetchHome } from '@/services/common';
 
-export default function useDashboardModel() {
-  const [info, setInfo] = useState<API.Dashboard>();
+export default function useHomeModel() {
+  const [info, setInfo] = useState<API.Home>();
   const [loading, setLoading] = useState(true);
 
   const getInfo = useCallback(() => {
     setLoading(true);
-    fetchDashboard()
+    fetchHome()
       .then((res) => {
         if (res.status === 'success') {
           setInfo(res.body);

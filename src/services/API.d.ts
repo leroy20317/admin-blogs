@@ -23,6 +23,12 @@ type BgMusic = {
 
 declare namespace API {
   export type CurrentUser = {
+    name: string;
+    avatar: string;
+    upload_type: number;
+  };
+
+  export type Info = {
     comment: {
       email: string;
       name: string;
@@ -57,7 +63,7 @@ declare namespace API {
     __v: number;
   };
 
-  export type Dashboard = {
+  export type Home = {
     envelope: Envelope[];
     article: {
       last: Article;
@@ -115,7 +121,7 @@ declare namespace API {
     time: string;
     email: string;
     content: string;
-    topic_id: number;
+    article_id: number;
     id: number;
     type: number;
     parent_id: number;

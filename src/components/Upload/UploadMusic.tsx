@@ -29,7 +29,7 @@ const UploadMusic = ({ value, onChange }: Props) => {
       accept="audio/*"
       name="file"
       multiple={false}
-      action={url.upload}
+      action={`${url.upload}/${currentUser?.upload_type || ''}`}
       fileList={fileList}
       beforeUpload={(file: any) => {
         let result = true;
@@ -42,9 +42,6 @@ const UploadMusic = ({ value, onChange }: Props) => {
       }}
       headers={{
         Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
-      }}
-      data={{
-        type: currentUser?.admin.upload_type || '',
       }}
       showUploadList={false}
       onChange={(info) => {

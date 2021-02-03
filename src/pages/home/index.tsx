@@ -1,21 +1,29 @@
 import React, { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Col, Row, Statistic } from 'antd';
+import { Card, Col, message, Row, Statistic } from 'antd';
 import { createFromIconfontCN } from '@ant-design/icons';
 import styles from './index.less';
 import { dateDiff } from '@/utils/utils';
-import { useModel } from 'umi';
+import { history, useModel } from 'umi';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_2341199_zo7uq67jsvq.js',
 });
 
 const Home: React.FC = () => {
-  const { info: data, getInfo, loading } = useModel('dashboard');
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState || {};
+  const { info: data, getInfo, loading } = useModel('home');
 
   const year = new Date().getFullYear();
 
   useEffect(() => {
+    if (!currentUser?.name) {
+      // 未填写相关信息
+      message.warn('请填写页面相关信息！');
+      history.push('/setting');
+      return;
+    }
     getInfo();
   }, []);
 
@@ -78,7 +86,7 @@ const Home: React.FC = () => {
                 <span>篇</span>
               </p>
               <p>
-                {data?.article
+                {data?.article.last
                   ? `${dateDiff(data.article?.last.time)} 发布了新的心情，继续加油哦！`
                   : '快来发布新文章啦'}
               </p>
@@ -96,7 +104,7 @@ const Home: React.FC = () => {
           <Col span={12}>
             <Card title={<h3 className={styles.title}>envelope</h3>} bordered={false}>
               <div className={styles.envelope}>
-                {data?.envelope ? (
+                {data?.envelope?.length ? (
                   data.envelope.map(({ _id: id, contentHtml }, index) => (
                     <p className={styles.item} key={id}>
                       <span>{index + 1}</span>
@@ -107,7 +115,7 @@ const Home: React.FC = () => {
                   <div
                     style={{
                       display: 'flex',
-                      textAlign: 'center',
+                      justifyContent: 'center',
                       alignItems: 'center',
                       height: '80%',
                     }}

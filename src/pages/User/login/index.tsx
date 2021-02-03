@@ -52,17 +52,15 @@ const Login: React.FC = () => {
     setSubmitting(true);
     try {
       // 登录
-      const { status, message: msg, token } = await loginIn(data);
+      const { status, body } = await loginIn(data);
       if (status === 'success') {
-        message.success('登录成功！');
-        localStorage.setItem('Authorization', token);
+        message.success('登录成功！', 1);
+        localStorage.setItem('Authorization', body.token);
         await fetchUserInfo();
         goto();
-        return;
       }
-      message.error(msg);
     } catch (error) {
-      message.error('登录失败，请重试！');
+      message.error(error.message || '登录失败，请重试！');
     }
     setSubmitting(false);
   };
@@ -79,7 +77,7 @@ const Login: React.FC = () => {
     setSubmitting(true);
     try {
       // 创建账号
-      const { status, message: msg } = await loginUp(data);
+      const { status } = await loginUp(data);
       if (status === 'success') {
         message.success('创建账号成功，请登录！');
         setIsCreate(false);
@@ -88,11 +86,10 @@ const Login: React.FC = () => {
           password: '',
           passwords: '',
         });
-        return;
+        setSubmitting(false);
       }
-      message.error(msg);
     } catch (error) {
-      message.error('创建账号失败，请重试！');
+      message.error(error.message || '创建账号失败，请重试！');
     }
     setSubmitting(false);
   };
