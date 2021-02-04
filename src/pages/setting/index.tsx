@@ -23,7 +23,7 @@ const Setting: React.FC = () => {
       fetchInfo()
         .then((res) => {
           if (res.status === 'success') {
-            const { _id: id, comment, bg_music, cover, admin, web } = res.body;
+            const { _id: id, comment, bg_music, cover, admin, web }: API.Info = res.body;
             form.setFieldsValue({
               _id: id,
               comment,
