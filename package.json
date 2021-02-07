@@ -52,7 +52,7 @@
     "@ant-design/pro-layout": "^6.11.1",
     "@ant-design/pro-table": "^2.26.1",
     "@umijs/route-utils": "^1.0.34",
-    "antd": "^4.11.1",
+    "antd": "^4.12.2",
     "antd-img-crop": "^3.13.2",
     "classnames": "^2.2.6",
     "lodash": "^4.17.11",
@@ -87,6 +87,7 @@
     "@umijs/preset-react": "^1.7.12",
     "@umijs/yorkie": "^2.0.5",
     "carlo": "^0.9.46",
+    "co": "^4.6.0",
     "cross-env": "^7.0.0",
     "cross-port-killer": "^1.1.1",
     "detect-installer": "^1.0.1",
@@ -101,11 +102,10 @@
     "prettier-plugin-style-order": "^0.2.2",
     "pro-download": "1.0.1",
     "puppeteer-core": "^5.0.0",
-    "stylelint": "^13.0.0",
-    "typescript": "^4.0.3",
-    "co": "^4.6.0",
     "qiniu": "^7.3.2",
-    "rd": "^2.0.1"
+    "rd": "^2.0.1",
+    "stylelint": "^13.0.0",
+    "typescript": "^4.0.3"
   },
   "engines": {
     "node": ">=10.0.0"
