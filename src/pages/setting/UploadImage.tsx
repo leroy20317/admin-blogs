@@ -3,10 +3,7 @@ import { Image, message, Upload } from 'antd';
 import { LoadingOutlined, PictureOutlined, PlusOutlined } from '@ant-design/icons';
 import { useModel } from '@@/plugin-model/useModel';
 import url from '@/utils/url';
-import ImgCrop from 'antd-img-crop';
-import 'antd-img-crop/src/index.less';
-import 'antd/es/modal/style';
-import 'antd/es/slider/style';
+import ImgCrop from '../../components/ImgCrop';
 import styles from './index.less';
 
 interface ImgProps {
@@ -73,7 +70,21 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
   const { currentUser } = initialState || {};
 
   return (
-    <ImgCrop aspect={isAvatar ? 1 : 1920 / 1080} shape={isAvatar ? 'round' : 'rect'}>
+    <ImgCrop
+      isSkip
+      grid
+      aspect={isAvatar ? 1 : 1920 / 1080}
+      shape={isAvatar ? 'round' : 'rect'}
+      beforeCrop={(file: any) => {
+        let result = true;
+        const { size } = file;
+        if (size / 1024 / 1024 > 10) {
+          result = false;
+          message.error('文件不能超过10M', 1);
+        }
+        return result;
+      }}
+    >
       <Upload.Dragger
         accept="image/*"
         name="file"
@@ -81,15 +92,6 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
         action={`${url.upload}/${currentUser?.upload_type || 1}`}
         fileList={fileList}
         className={isAvatar ? styles.avatar : styles.bg}
-        beforeUpload={(file: any) => {
-          let result = true;
-          const { size } = file;
-          if (size / 1024 / 1024 > 10) {
-            result = false;
-            message.error('文件不能超过10M', 1);
-          }
-          return result;
-        }}
         headers={{
           Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
         }}

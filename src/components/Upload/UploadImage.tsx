@@ -3,10 +3,7 @@ import { Image, message, Upload } from 'antd';
 import { LoadingOutlined, PictureOutlined } from '@ant-design/icons';
 import { useModel } from '@@/plugin-model/useModel';
 import url from '@/utils/url';
-import ImgCrop from 'antd-img-crop';
-import 'antd-img-crop/src/index.less';
-import 'antd/es/modal/style';
-import 'antd/es/slider/style';
+import ImgCrop from '../ImgCrop';
 
 const Img = ({
   status,
@@ -57,22 +54,26 @@ const UploadImage = ({ value, onChange }: Props) => {
   const { currentUser } = initialState || {};
 
   return (
-    <ImgCrop aspect={680 / 440}>
+    <ImgCrop
+      isSkip
+      aspect={680 / 440}
+      grid
+      beforeCrop={(file: any) => {
+        let result = true;
+        const { size } = file;
+        if (size / 1024 / 1024 > 10) {
+          result = false;
+          message.error('文件不能超过10M', 1);
+        }
+        return result;
+      }}
+    >
       <Upload.Dragger
         accept="image/*"
         name="file"
         multiple={false}
         action={`${url.upload}/${currentUser?.upload_type || ''}`}
         fileList={fileList}
-        beforeUpload={(file: any) => {
-          let result = true;
-          const { size } = file;
-          if (size / 1024 / 1024 > 10) {
-            result = false;
-            message.error('文件不能超过10M', 1);
-          }
-          return result;
-        }}
         headers={{
           Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
         }}
