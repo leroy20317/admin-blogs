@@ -146,7 +146,7 @@ const ImgCrop = forwardRef<any, ImgCropProps>((props, ref) => {
     modalCancel = '取消',
 
     isSkip = false,
-    modalSkip = '跳过',
+    modalSkip = '跳过裁剪',
 
     beforeCrop,
     children,
