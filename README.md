@@ -1,7 +1,3 @@
-# Ant Design Pro
-
-This project is initialized with [Ant Design Pro](https://pro.ant.design). Follow is the quick guide for how to use.
-
 ## Environment Prepare
 
 Install `node_modules`:
@@ -52,6 +48,17 @@ npm run lint:fix
 npm test
 ```
 
-## More
+## Description
 
-You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).
+1. react + ts + Ant design Pro 5.0
+2. 页面
+   1. 登录
+   2. 仪表盘
+   3. 文章列表、添加修改
+   4. 短语列表、添加修改
+   5. 评论列表、添加修改
+   6. 个人介绍
+   7. 系统相关设置
+3. 运用 useModel 处理简易数据流
+4. 通过将项目资源上传至七牛 CDN 达到请求优化缓存加速功能
+5. 使用 jenkins 来实现项目的自动化部署
