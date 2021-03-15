@@ -174,7 +174,7 @@ const Comment: React.FC = () => {
       className={styles.comment}
       pageHeaderRender={() => (
         <h2 className={styles.header}>
-          短语列表 ({data?.total})
+          评论列表 ({data?.total})
           {unread && (
             <span className={styles.read} onClick={onRead}>
               <SyncOutlined style={{ fontSize: 14, marginRight: 5 }} />
