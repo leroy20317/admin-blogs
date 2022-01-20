@@ -61,6 +61,11 @@ jobs:
       #         env:
       #           CI: true
 
+      - name: echo
+        run: |
+          echo ${{ secrets.ACCESS_TOKEN }}
+          echo ${{ secrets.REMOTE_HOST }}
+          echo ${{ secrets.REMOTE_USER }}
       # Deploy
       - name: Deploy
         uses: easingthemes/ssh-deploy@v2.2.11
@@ -70,4 +75,4 @@ jobs:
           SOURCE: "dist.tar.gz"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: ${{ secrets.TARGET }}
+          TARGET: '/wwwroot/admin-blogs'
