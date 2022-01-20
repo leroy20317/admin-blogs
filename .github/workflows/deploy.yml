@@ -14,19 +14,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      # 切换分支
       - name: Checkout
-        # 切换分支
         uses: actions/checkout@main
+
       # 下载 git submodule
       - uses: srt32/git-actions@v0.0.3
         with:
           args: git submodule update --init --recursive
+
       # 使用 node:14
       - name: use Node.js 14.18.3
         uses: actions/setup-node@v2
         with:
           node-version: '14.18.3'
           cache: 'npm'
+
+      # 缓存 node modules
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -41,17 +46,17 @@ jobs:
             ${{ runner.os }}-
 
       # npm install
-      - name: npm install
+      - name: Npm install
         run: |
           npm install
 
       # build
-      - name: publish build
+      - name: Npm run publish
         run: |
-          npm run build
+          npm run publish
 
       # tar
-      - name: tar dist
+      - name: Tar dist
         run: |
           tar zcf dist.tar.gz -C dist index.html
 
@@ -59,9 +64,22 @@ jobs:
       - name: Deploy
         uses: easingthemes/ssh-deploy@v2.2.11
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN }}
+          SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN_PEM }}
           ARGS: "-avz --delete"
           SOURCE: "dist.tar.gz"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: '/wwwroot/admin-blogs'
+
+      # 远程Command
+      - name: Command
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.ACCESS_TOKEN }}
+          script: |
+            cd /wwwroot/admin-blogs
+            tar zxf dist.tar.gz
+            rm dist.tar.gz
+            echo "Complete!!!"
