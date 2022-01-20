@@ -49,13 +49,13 @@ jobs:
 #         env:
 #           CI: true
 
-#       # Deploy
-#       - name: Deploy
-#         uses: easingthemes/ssh-deploy@v2.2.11
-#         env:
-#           SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN }}
-#           ARGS: "-avz --delete"
-#           SOURCE: "dist/index.html"
-#           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-#           REMOTE_USER: ${{ secrets.REMOTE_USER }}
-#           TARGET: ${{ secrets.TARGET }}
+       # Deploy
+       - name: Deploy
+         uses: easingthemes/ssh-deploy@v2.2.11
+         env:
+           SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN }}
+           ARGS: "-avz --delete"
+           SOURCE: "dist.tar.gz"
+           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+           REMOTE_USER: ${{ secrets.REMOTE_USER }}
+           TARGET: ${{ secrets.TARGET }}
