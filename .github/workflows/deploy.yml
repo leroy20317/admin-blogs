@@ -1,6 +1,7 @@
 name: Deploy admin blog
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master ]
   pull_request:
@@ -10,7 +11,7 @@ jobs:
   build:
     # 使用ubuntu系统镜像运行自动化脚本
     runs-on: ubuntu-latest
-        
+
     steps:
       # 切换分支
       - name: Checkout
@@ -29,16 +30,17 @@ jobs:
       - name: npm install
         run: |
           npm install
-        env:
-          CI: true
-          
+
       # build
       - name: publish build
         run: |
           npm run build
-        env:
-          CI: true
-          
+
+      # tar
+      - name: tar dist
+        run: |
+          tar zcf dist.tar.gz -C dist index.html
+
 #       # build
 #       - name: publish build
 #         run: |
