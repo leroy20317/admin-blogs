@@ -55,10 +55,10 @@ jobs:
         run: |
           npm run publish
 
-      # tar
-      - name: Tar dist
-        run: |
-          tar zcf dist.tar.gz -C dist index.html
+#      # tar
+#      - name: Tar dist
+#        run: |
+#          tar zcf dist.tar.gz -C dist index.html
 
       # Deploy
       - name: Deploy
@@ -66,20 +66,20 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN_PEM }}
           ARGS: "-avz --delete"
-          SOURCE: "dist.tar.gz"
+          SOURCE: "dist/index.html"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: '/wwwroot/admin-blogs'
 
-      # 远程Command
-      - name: Command
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.ACCESS_TOKEN }}
-          script: |
-            cd /wwwroot/admin-blogs
-            tar zxf dist.tar.gz
-            rm dist.tar.gz
-            echo "Complete!!!"
+#      # 远程Command
+#      - name: Command
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.REMOTE_HOST }}
+#          username: ${{ secrets.REMOTE_USER }}
+#          key: ${{ secrets.ACCESS_TOKEN }}
+#          script: |
+#            cd /wwwroot/admin-blogs
+#            tar zxf dist.tar.gz
+#            rm dist.tar.gz
+#            echo "Complete!!!"
