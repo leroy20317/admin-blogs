@@ -15,8 +15,8 @@ jobs:
 
     steps:
 #      # 切换分支
-#      - name: Checkout
-#        uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@main
       # 下载 git submodule
       - uses: srt32/git-actions@v0.0.3
         with:
