@@ -3,10 +3,10 @@ name: Deploy admin blog
 on:
   # 手动触发
   workflow_dispatch:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
 
 jobs:
   build:
@@ -22,10 +22,10 @@ jobs:
         with:
           args: git submodule update --init --recursive
       # 使用 node:14
-      - name: use Node.js 14
+      - name: use Node.js 14.18.3
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '14.18.3'
           cache: 'npm'
       # npm install
       - name: npm install
