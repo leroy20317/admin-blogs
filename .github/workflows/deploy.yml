@@ -1,11 +1,12 @@
 name: Deploy admin blog
 
 on:
+  # 手动触发
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
