@@ -27,6 +27,8 @@ yarn.lock
 functions/*
 .temp/**
 
+.env
+
 # umi
 .umi
 .umi-production
