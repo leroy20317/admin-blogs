@@ -1,10 +1,12 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const path = require('path');
 const qiniu = require('qiniu');
 const rd = require('rd');
 const co = require('co');
 const folderName = require('./package.json').name;
-const accessKey = 'yH-26a9NAohR_QegJR1uGU5I5Dw595l6n_tXHwPB';
-const secretKey = 'EcLCXW7hZiaY48qbFP1yU9okc17a12mmQqF9Ipth';
+const accessKey = process.env.ACCESSKEY;
+const secretKey = process.env.SECRETKEY;
 
 const mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
 const config = new qiniu.conf.Config({

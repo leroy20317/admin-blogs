@@ -29,7 +29,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14.18.3'
-          cache: 'npm'
 
       # 缓存 node modules
       - name: Cache node modules
@@ -51,35 +50,31 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
 
+      # Create .env
+      - name: Create .env
+        env:
+          ACCESSKEY: ${{ secrets.ACCESSKEY }}
+          SECRETKEY: ${{ secrets.SECRETKEY }}
+        run: |
+          echo ACCESSKEY="$ACCESSKEY" >> .env
+          echo SECRETKEY="$SECRETKEY" >> .env
+        shell: bash
+
       # build
       - name: Publish
         run: npm run publish
 
-#      # tar
-#      - name: Tar dist
-#        run: |
-#          tar zcf dist.tar.gz -C dist index.html
 
-      # Deploy
-      - name: Deploy
-        uses: easingthemes/ssh-deploy@v2.2.11
+      # Deploy to server
+      - name: Deploy to server
+        id: deploy
+        uses: Pendect/action-rsyncer@v1.1.0
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN_PEM }}
-          ARGS: "-avz --delete"
-          SOURCE: "dist/index.html"
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: '/wwwroot/admin-blogs'
+          DEPLOY_KEY: ${{secrets.ACCESS_TOKEN}}
+        with:
+          flags: '-avzr --delete'
+          options: ''
+          ssh_options: ''
+          src: 'dist/index.html'
+          dest: '${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/wwwroot/admin-blogs'
 
-#      # 远程Command
-#      - name: Command
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.REMOTE_HOST }}
-#          username: ${{ secrets.REMOTE_USER }}
-#          key: ${{ secrets.ACCESS_TOKEN }}
-#          script: |
-#            cd /wwwroot/admin-blogs
-#            tar zxf dist.tar.gz
-#            rm dist.tar.gz
-#            echo "Complete!!!"
