@@ -29,14 +29,10 @@ const Myself: React.FC = () => {
   };
 
   useEffect(() => {
-    getMyself().then(({ _id: id, content, contentHtml }: any) => {
+    getMyself().then(({ _id: id, content }: any) => {
       form.setFieldsValue({
         _id: id,
-        editor: {
-          val: content,
-          html: contentHtml,
-          length: content?.length,
-        },
+        content,
       });
     });
 
@@ -45,11 +41,10 @@ const Myself: React.FC = () => {
     };
   }, []);
 
-  const onFinish = async ({ _id: id, editor }: any) => {
+  const onFinish = async ({ _id: id, content }: any) => {
     const params = {
       _id: id,
-      content: editor.val,
-      contentHtml: editor.html,
+      content: content,
     };
 
     console.log('params', params);
@@ -97,11 +92,8 @@ const Myself: React.FC = () => {
         <Form.Item noStyle name="_id" hidden>
           <Input />
         </Form.Item>
-        <Form.Item
-          name="editor"
-          rules={[{ required: true, transform: (value) => value?.html, message: '内容不能为空!' }]}
-        >
-          <Editor height={600} placeholder="请填写自我介绍！" />
+        <Form.Item name="content" rules={[{ required: true, message: '内容不能为空!' }]}>
+          <Editor height={600} />
         </Form.Item>
         <Form.Item>
           <Button

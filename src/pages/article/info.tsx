@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Col, DatePicker, Form, Input, message, Radio, Row, Switch } from 'antd';
 import styles from './info.less';
@@ -36,14 +36,8 @@ const ArticleInfo: React.FC = () => {
     if (id) {
       getDetail().then((res: any) => {
         form.setFieldsValue({
-          title: res?.title,
-          editor: {
-            val: res?.content,
-            html: res?.contentHtml,
-            length: res?.words,
-          },
+          ...res,
           time: res?.time && moment(res.time),
-          describe: res?.describe,
           image: res?.image.url
             ? {
                 url: res?.image.url || '',
@@ -57,7 +51,6 @@ const ArticleInfo: React.FC = () => {
               }
             : undefined,
           isUpload: true,
-          hide: res?.hide,
         });
       });
     }
@@ -71,8 +64,6 @@ const ArticleInfo: React.FC = () => {
     const params = {
       title: values.title,
       content: values.editor.val,
-      contentHtml: values.editor.html,
-      words: values.editor.length,
       time: values.time.format('YYYY-MM-DD HH:mm:ss'),
       describe: values.describe,
       image: {
@@ -147,10 +138,10 @@ const ArticleInfo: React.FC = () => {
         </Form.Item>
         <Form.Item
           label="文章内容"
-          name="editor"
-          rules={[{ required: true, transform: (value) => value?.html, message: '请填写内容!' }]}
+          name="content"
+          rules={[{ required: true, message: '请填写内容!' }]}
         >
-          <Editor placeholder="请填写文章内容！" />
+          <Editor height={500} />
         </Form.Item>
         <Form.Item label="发布时间" name="time" required>
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />

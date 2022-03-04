@@ -1,37 +1,40 @@
-import React from 'react';
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
-import { notification } from 'antd';
 import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { history } from 'umi';
 import type { ResponseError } from 'umi-request';
-import { queryCurrent } from './services/user';
 import defaultSettings from '../config/defaultSettings';
+import { queryCurrent as queryCurrentUser } from './services/user';
 import MenuHeader from './components/Sidebar/MenuHeader';
+import { notification } from 'antd';
 
-/**
- * 获取用户信息比较慢的时候会展示一个 loading
- */
+const loginPath = '/user/login';
+
+/** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
   loading: <PageLoading />,
 };
 
+/**
+ * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
+ * */
 export async function getInitialState(): Promise<{
-  settings?: LayoutSettings;
+  settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
+  loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
-      const { body } = await queryCurrent();
+      const { body } = await queryCurrentUser();
       return body || {};
     } catch (error) {
-      history.push('/user/login');
+      history.push(loginPath);
     }
     return undefined;
   };
   // 如果是登录页面，不执行
-  if (history.location.pathname !== '/user/login') {
+  if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -45,28 +48,34 @@ export async function getInitialState(): Promise<{
   };
 }
 
+// ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
-  const { currentUser } = initialState || {};
   return {
     collapsedWidth: 100,
     siderWidth: 200,
     rightContentRender: () => null,
     disableContentMargin: false,
     footerRender: () => null,
+    menuHeaderRender: () => <MenuHeader currentUser={initialState?.currentUser} />,
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!currentUser && location.pathname !== '/user/login') {
-        history.push('/user/login');
+      if (!initialState?.currentUser && location.pathname !== loginPath) {
+        history.push(loginPath);
       }
     },
-    menuHeaderRender: () => <MenuHeader currentUser={currentUser} />,
-    headerRender: false,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
+    // 增加一个 loading 的状态
+    childrenRender: (children) => {
+      if (initialState?.loading) return <PageLoading />;
+      return children;
+    },
     ...initialState?.settings,
   };
 };
+
+const key = 'error';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -98,6 +107,7 @@ const errorHandler = (error: ResponseError) => {
 
     if (status === 401 || status === 403) {
       notification.error({
+        key,
         message: '未登录或登录已过期，请重新登录。',
       });
       // @HACK
@@ -112,6 +122,7 @@ const errorHandler = (error: ResponseError) => {
   }
   if (!response) {
     notification.error({
+      key,
       description: '您的网络发生异常，无法连接服务器',
       message: '网络异常',
     });
@@ -120,6 +131,8 @@ const errorHandler = (error: ResponseError) => {
 };
 
 export const request: RequestConfig = {
+  // prefix: process.env.NODE_ENV === 'production' ? '//api.leroy.net.cn/admin' : 'http://local.leroy.net.cn:5001/admin',
+  prefix: '//api.leroy.net.cn/admin',
   errorHandler,
   requestInterceptors: [
     (url, options) => {

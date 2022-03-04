@@ -9,9 +9,12 @@
           {
             name: 'login',
             path: '/user/login',
-            component: './User/login',
+            component: './user/Login',
           },
         ],
+      },
+      {
+        component: './404',
       },
     ],
   },
@@ -48,12 +51,12 @@
     component: './envelope/info',
   },
 
-  {
-    path: '/comment',
-    name: 'comment',
-    icon: 'icon-lightning',
-    component: './comment/index',
-  },
+  // {
+  //   path: '/comment',
+  //   name: 'comment',
+  //   icon: 'icon-lightning',
+  //   component: './comment/index',
+  // },
 
   {
     path: '/myself',

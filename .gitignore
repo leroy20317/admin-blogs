@@ -19,7 +19,7 @@ yarn-error.log
 .idea
 yarn.lock
 *bak
-.vscode
+
 
 # visual studio code
 .history
@@ -28,6 +28,7 @@ functions/*
 .temp/**
 
 .env
+.mfsu
 
 # umi
 .umi

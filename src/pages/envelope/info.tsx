@@ -34,11 +34,7 @@ const EnvelopeInfo: React.FC = () => {
     if (id) {
       getDetail().then((res: any) => {
         form.setFieldsValue({
-          editor: {
-            val: res?.content,
-            html: res?.contentHtml,
-            length: res?.words,
-          },
+          content: res?.content,
           time: res?.time && moment(res.time),
         });
       });
@@ -51,9 +47,7 @@ const EnvelopeInfo: React.FC = () => {
 
   const onFinish = async (values: any) => {
     const params = {
-      content: values.editor.val,
-      contentHtml: values.editor.html,
-      words: values.editor.length,
+      content: values.content,
       time: values.time.format('YYYY-MM-DD HH:mm:ss'),
     };
 
@@ -111,10 +105,10 @@ const EnvelopeInfo: React.FC = () => {
       >
         <Form.Item
           label="短语内容"
-          name="editor"
-          rules={[{ required: true, transform: (value) => value?.html, message: '请填写内容!' }]}
+          name="content"
+          rules={[{ required: true, message: '请填写内容!' }]}
         >
-          <Editor placeholder="请填写短语！" />
+          <Editor height={500} />
         </Form.Item>
         <Form.Item label="发布时间" name="time" required>
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />

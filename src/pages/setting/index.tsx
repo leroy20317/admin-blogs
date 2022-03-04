@@ -23,10 +23,9 @@ const Setting: React.FC = () => {
       fetchInfo()
         .then((res) => {
           if (res.status === 'success') {
-            const { _id: id, comment, bg_music, cover, admin, web }: API.Info = res.body;
+            const { _id: id, bg_music, cover, admin, web }: API.Info = res.body;
             form.setFieldsValue({
               _id: id,
-              comment,
               bg_music,
               cover: {
                 ...cover,
@@ -60,10 +59,9 @@ const Setting: React.FC = () => {
     };
   }, []);
 
-  const onFinish = async ({ _id: id, comment, bg_music, cover, admin, web }: any) => {
+  const onFinish = async ({ _id: id, bg_music, cover, admin, web }: any) => {
     const params = {
       _id: id,
-      comment,
       bg_music,
       cover: {
         ...cover,
@@ -232,16 +230,16 @@ const Setting: React.FC = () => {
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
 
-        <h2 className={styles.header}>评论信息</h2>
-        <Form.Item label="评论邮箱" name={['comment', 'email']} required>
-          <Input placeholder="管理员评论的邮箱" />
-        </Form.Item>
-        <Form.Item label="评论昵称" name={['comment', 'name']} required>
-          <Input placeholder="管理员评论的昵称" />
-        </Form.Item>
-        <Form.Item label="评论标识" name={['comment', 'mark']} required>
-          <Input placeholder="前台评论的管理员标识" />
-        </Form.Item>
+        {/*<h2 className={styles.header}>评论信息</h2>*/}
+        {/*<Form.Item label="评论邮箱" name={['comment', 'email']} required>*/}
+        {/*  <Input placeholder="管理员评论的邮箱" />*/}
+        {/*</Form.Item>*/}
+        {/*<Form.Item label="评论昵称" name={['comment', 'name']} required>*/}
+        {/*  <Input placeholder="管理员评论的昵称" />*/}
+        {/*</Form.Item>*/}
+        {/*<Form.Item label="评论标识" name={['comment', 'mark']} required>*/}
+        {/*  <Input placeholder="前台评论的管理员标识" />*/}
+        {/*</Form.Item>*/}
 
         <h2 className={styles.header}>背景音乐</h2>
         <Form.Item label="文章列表" name={['bg_music', 'mood']} required>

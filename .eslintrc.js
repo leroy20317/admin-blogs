@@ -8,5 +8,6 @@ module.exports = {
   rules: {
     'no-console': 'warn',
     'no-underscore-dangle': 'off',
+    'react-hooks/exhaustive-deps': 'off',
   },
 };

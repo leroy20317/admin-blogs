@@ -1,14 +1,14 @@
 import { request } from 'umi';
 import url from '@/utils/url';
 
-export async function fetch({ id, ...params }: any) {
+export async function fetch({ id, ...params }: Record<string, any>) {
   return request(`${url.comment}/${id || ''}`, {
     method: 'get',
     params,
   });
 }
 
-export async function replay(id?: string, data: GlobalObject = {}) {
+export async function replay(id?: string, data: Record<string, any> = {}) {
   return request(`${url.comment}/replay/${id}`, {
     method: 'post',
     data,

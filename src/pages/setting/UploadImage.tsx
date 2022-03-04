@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { Image, message, Upload } from 'antd';
 import { LoadingOutlined, PictureOutlined, PlusOutlined } from '@ant-design/icons';
 import { useModel } from '@@/plugin-model/useModel';

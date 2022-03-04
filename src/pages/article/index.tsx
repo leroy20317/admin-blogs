@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Col, List, message, Popconfirm, Row, Space, Tooltip } from 'antd';
 import styles from './index.less';

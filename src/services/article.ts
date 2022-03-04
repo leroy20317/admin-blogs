@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import url from '@/utils/url';
 
-interface Params extends GlobalObject {
+interface Params extends Record<string, any> {
   id?: number | string;
 }
 
@@ -12,7 +12,7 @@ export async function fetch({ id, ...params }: any) {
   });
 }
 
-export async function update({ id, data }: { id: any; data: GlobalObject }) {
+export async function update({ id, data }: { id: any; data: Record<string, any> }) {
   return request(`${url.article}/${id || ''}`, {
     method: 'put',
     data,

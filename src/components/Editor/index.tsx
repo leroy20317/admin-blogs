@@ -1,76 +1,164 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
-import Vditor from 'vditor';
-import 'vditor/dist/index.css';
-import styles from './index.less';
-import url from '@/utils/url';
+import { ChangeEventHandler, FC, memo, useEffect, useRef, useState } from 'react';
+import {
+  CodeOutlined,
+  FullscreenExitOutlined,
+  FullscreenOutlined,
+  MinusSquareOutlined,
+  PictureOutlined,
+  ReadOutlined,
+} from '@ant-design/icons';
+import { useFullscreen } from 'ahooks';
+import ReactMarkdown from 'react-markdown';
+import * as monaco from 'monaco-editor';
+import { Divider, Space, Tooltip } from 'antd';
 import { useModel } from 'umi';
+import styles from './index.less';
+import { upload } from '@/services/common';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import vscDarkPlus from 'react-syntax-highlighter/dist/esm/styles/prism/vsc-dark-plus';
 
 interface Props {
-  value?: any;
+  value?: string;
   onChange?: (...agm: any[]) => void;
   height?: number;
-  placeholder?: string;
 }
 
-const Editor = ({ value, onChange, height, placeholder }: Props) => {
+const Editor: FC<Props> = ({ value, onChange, height = 800 }) => {
   const { initialState } = useModel('@@initialState');
-  const [vditorEditor, setVditor] = useState<any>(null);
-  const ref = useRef<any>(null);
+  const { currentUser } = initialState || {};
+  const boxRef = useRef<HTMLDivElement>(null);
+  const divEl = useRef<HTMLDivElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const editor = useRef<monaco.editor.IStandaloneCodeEditor>();
+  const [status, setStatus] = useState<'split' | 'preview' | 'edit'>('edit');
+  const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(boxRef);
 
+  const insertContent = (text: string) => {
+    const selection = editor.current?.getSelection();
+    if (!selection) return;
+    const range = new monaco.Range(
+      selection.startLineNumber,
+      selection.startColumn,
+      selection.endLineNumber,
+      selection.endColumn,
+    );
+    const id = { major: 1, minor: 1 };
+    const op = { identifier: id, range: range, text, forceMoveMarkers: true };
+    editor.current?.executeEdits(null, [op]);
+  };
   useEffect(() => {
-    const { currentUser } = initialState || {};
-    const vditor = new Vditor(ref.current, {
-      height: height || 420,
-      placeholder,
-      toolbarConfig: {
-        pin: true,
-      },
-      cache: {
-        enable: false,
-      },
-      // after() {
-      //   vditor.setValue(value || '');
-      // },
-      value: value?.val,
-      blur: (val) => {
-        if (onChange) {
-          onChange({ val, html: vditor?.getHTML(), length: val.length });
-          // onChange(val);
-        }
-      },
-      preview: {
-        delay: 200,
-        actions: ['desktop', 'mobile'],
-        markdown: {
-          autoSpace: true,
-          fixTermTypo: true,
-          toc: true,
-        },
-      },
-      upload: {
-        url: `${url.upload}/${currentUser?.upload_type}`,
-        multiple: false,
-        accept: 'audio/*,video/*,image/*',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
-        },
-        fieldName: 'file',
-        success: (editor, msg) => {
-          const response = JSON.parse(msg);
-          if (response.status === 'success') {
-            const md = `![${response.body.filename}](${response.body.url})`;
-            vditor.insertValue(md);
-          }
-        },
-      },
-    });
-    setVditor(vditor);
-
+    if (divEl.current) {
+      editor.current = monaco.editor.create(divEl.current, {
+        value,
+        language: 'markdown',
+        quickSuggestions: true,
+        minimap: { enabled: false },
+        // theme: 'vs-dark',
+        acceptSuggestionOnEnter: 'on',
+        fontSize: 14,
+        wordWrap: 'on',
+        automaticLayout: true, //编辑器自适应布局
+        wordSeparators: '~!@#$%^&*()-=+[{]}|;:\'",.<>/?',
+        wordWrapBreakAfterCharacters: '\t})]?|&,;',
+        wordWrapBreakBeforeCharacters: '{([+',
+      });
+      editor.current.onDidChangeModelContent(function () {
+        const newValue = editor.current?.getValue();
+        onChange?.(newValue);
+      });
+    }
     return () => {
-      vditorEditor?.destroy();
+      editor.current?.dispose();
     };
   }, []);
 
-  return <div className={styles.editor} ref={ref} />;
+  const onFileChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const file = e.target.files?.[0];
+    if (fileRef.current) fileRef.current.value = '';
+    if (!file) return;
+    const res = await upload({
+      type: currentUser?.upload_type,
+      file,
+    });
+    insertContent(`![${res.body.filename}](${res.body.url})`);
+  };
+
+  const list = [
+    {
+      title: '上传图片',
+      component: (
+        <div className="anticon" style={{ position: 'relative' }}>
+          <PictureOutlined />
+          <input
+            type="file"
+            className={styles.file}
+            title=""
+            onChange={onFileChange}
+            accept="audio/*,video/*,image/*"
+            ref={fileRef}
+          />
+        </div>
+      ),
+    },
+    { title: '全屏', component: <FullscreenOutlined onClick={enterFullscreen} /> },
+    { title: '取消全屏', component: <FullscreenExitOutlined onClick={exitFullscreen} /> },
+    { title: '编辑模式', component: <CodeOutlined onClick={() => setStatus('edit')} /> },
+    {
+      title: '分屏模式',
+      component: (
+        <MinusSquareOutlined
+          style={{ transform: 'rotate(90deg)' }}
+          onClick={() => setStatus('split')}
+        />
+      ),
+    },
+    { title: '预览模式', component: <ReadOutlined onClick={() => setStatus('preview')} /> },
+  ];
+
+  return (
+    <div className={styles.editor} ref={boxRef}>
+      <Space className={styles.tab} split={<Divider type="vertical" />}>
+        {list.map((item) => (
+          <Tooltip key={item.title} title={item.title} placement="bottom">
+            {item.component}
+          </Tooltip>
+        ))}
+      </Space>
+      <div
+        className={`${styles.main} ${styles[status]}`}
+        style={{ height: isFullscreen ? 'calc(100vh - 40px)' : height }}
+      >
+        <div className={styles.left}>
+          <div className="Editor" ref={divEl} style={{ height: '100%' }} />
+        </div>
+        <div className={styles.right} style={{ overflow: 'auto', padding: 8 }}>
+          <ReactMarkdown
+            components={{
+              code({ node, inline, className, children, ...props }) {
+                const match = /language-(\w+)/.exec(className || '');
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    style={vscDarkPlus}
+                    language={match[1]}
+                    PreTag="div"
+                    {...props}
+                  >
+                    {String(children).replace(/\n$/, '')}
+                  </SyntaxHighlighter>
+                ) : (
+                  <code className={className} {...props}>
+                    {children}
+                  </code>
+                );
+              },
+            }}
+          >
+            {value || ''}
+          </ReactMarkdown>
+        </div>
+      </div>
+    </div>
+  );
 };
+
 export default memo(Editor);

@@ -1,19 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="keywords" content="admin for blogs" />
     <meta name="description" content="admin for leroy's blogs" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>admin for blogs</title>
     <link rel="icon" href="<%= context.config.publicPath +'favicon.ico'%>" type="image/x-icon" />
   </head>
   <body>
-    <noscript>Out-of-the-box mid-stage front/design solution!</noscript>
+    <noscript>
+      <div class="noscript-container">
+        Hi there! Please
+        <div class="noscript-enableJS">
+          <a href="https://www.enablejavascript.io/en" target="_blank" rel="noopener noreferrer">
+            <b>enable Javascript</b>
+          </a>
+        </div>
+        in your browser to use Ant Design, Out-of-the-box mid-stage front/design solution!
+      </div>
+    </noscript>
     <div id="root">
       <style>
         html,
@@ -23,13 +30,27 @@
           margin: 0;
           padding: 0;
         }
+        #root {
+          background-repeat: no-repeat;
+          background-size: 100% auto;
+        }
+        .noscript-container {
+          display: flex;
+          align-content: center;
+          justify-content: center;
+          margin-top: 90px;
+          font-size: 20px;
+          font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode',
+            Geneva, Verdana, sans-serif;
+        }
+        .noscript-enableJS {
+          padding-right: 3px;
+          padding-left: 3px;
+        }
         .page-loading-warp {
           display: flex;
           align-items: center;
           justify-content: center;
-          box-sizing: border-box;
-          width: 100vw;
-          height: 100vh;
           padding: 98px;
         }
         .ant-spin {
@@ -166,14 +187,14 @@
           }
         }
       </style>
-      <div class="page-loading-warp">
-        <div class="ant-spin ant-spin-lg ant-spin-spinning">
+        <div class="page-loading-warp">
+            <div class="ant-spin ant-spin-lg ant-spin-spinning">
           <span class="ant-spin-dot ant-spin-dot-spin"
-            ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
-            ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
-          ></span>
+          ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
+              ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
+              ></span>
+            </div>
         </div>
-      </div>
     </div>
   </body>
 </html>

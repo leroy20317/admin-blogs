@@ -1,14 +1,10 @@
 import React, { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Col, message, Row, Statistic } from 'antd';
-import { createFromIconfontCN } from '@ant-design/icons';
 import styles from './index.less';
 import { dateDiff } from '@/utils/utils';
 import { history, useModel } from 'umi';
-
-const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_2341199_zo7uq67jsvq.js',
-});
+import IconFont from '@/components/IconFont';
 
 const Home: React.FC = () => {
   const { initialState } = useModel('@@initialState');

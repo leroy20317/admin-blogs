@@ -59,7 +59,7 @@ const Login: React.FC = () => {
         await fetchUserInfo();
         goto();
       }
-    } catch (error) {
+    } catch (error: any) {
       message.error(error.message || '登录失败，请重试！');
     }
     setSubmitting(false);
@@ -88,7 +88,7 @@ const Login: React.FC = () => {
         });
         setSubmitting(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       message.error(error.message || '创建账号失败，请重试！');
     }
     setSubmitting(false);
@@ -183,5 +183,4 @@ const Login: React.FC = () => {
     </div>
   );
 };
-
 export default Login;

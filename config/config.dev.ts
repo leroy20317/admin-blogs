@@ -12,4 +12,11 @@ export default defineConfig({
     babelPlugins: [],
     babelOptions: {},
   },
+  publicPath: `/`,
+  mfsu: {},
+  // styles: [`/dist/vditor/dist/index.css`],
+  devServer: {
+    port: 5002,
+    host: 'local.leroy.net.cn',
+  },
 });

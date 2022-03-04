@@ -1,10 +1,12 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
+
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
 
-const { REACT_APP_ENV, NODE_ENV, npm_package_name } = process.env;
+const { REACT_APP_ENV, npm_package_name } = process.env;
 
 export default defineConfig({
   hash: true,
@@ -18,6 +20,7 @@ export default defineConfig({
     siderWidth: 208,
     ...defaultSettings,
   },
+  // https://umijs.org/zh-CN/plugins/plugin-locale
   locale: {
     // default zh-CN
     default: 'zh-CN',
@@ -35,8 +38,11 @@ export default defineConfig({
   routes,
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
+    'root-entry-name': 'variable',
     'primary-color': defaultSettings.primaryColor,
   },
+  // esbuild is father build tools
+  // https://umijs.org/plugins/plugin-esbuild
   esbuild: {},
   title: false,
   ignoreMomentLocale: true,
@@ -44,15 +50,25 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
-  publicPath: NODE_ENV === 'production' ? `https://cdn.leroy.net.cn/${npm_package_name}/` : '/',
+  // Fast Refresh 热更新
+  fastRefresh: {},
+  nodeModulesTransform: { type: 'none' },
+  webpack5: {},
+  exportStatic: {},
+  // styles: [`https://cdn.leroy.net.cn/${npm_package_name}/dist/vditor/dist/index.css`],
+  publicPath: `https://cdn.leroy.net.cn/${npm_package_name}/`,
   terserOptions: {
     compress: {
       drop_console: true,
       pure_funcs: ['console.log'],
     },
   },
-  devServer: {
-    port: 5002,
-    host: 'local.leroy.net.cn',
+  chainWebpack: (memo) => {
+    // 更多配置 https://github.com/Microsoft/monaco-editor-webpack-plugin#options
+    memo.plugin('monaco-editor-webpack-plugin').use(MonacoWebpackPlugin, [
+      // 按需配置
+      { languages: ['markdown'] },
+    ]);
+    return memo;
   },
 });

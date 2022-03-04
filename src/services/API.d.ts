@@ -29,11 +29,6 @@ declare namespace API {
   };
 
   export type Info = {
-    comment: {
-      email: string;
-      name: string;
-      mark: string;
-    };
     bg_music: {
       about: string;
       letter: string;
