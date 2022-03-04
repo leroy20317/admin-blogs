@@ -28,6 +28,8 @@ export async function postMyself(data: Record<string, any>) {
 }
 
 export async function upload(data: { type?: number; file: Blob }) {
+  const formData = new FormData();
+  formData.append('file', data.file);
   return request<{
     status: string;
     message: string;
@@ -37,6 +39,6 @@ export async function upload(data: { type?: number; file: Blob }) {
     };
   }>(`${url.upload}/${data.type}`, {
     method: 'post',
-    data: data.file,
+    data: formData,
   });
 }
