@@ -389,7 +389,7 @@ const ImgCrop = forwardRef<Cropper, ImgCropProps & { children?: ReactNode }>((pr
           cancelText="跳过"
           {...modalProps}
           cancelButtonProps={{
-            ...modalProps.cancelButtonProps,
+            ...modalProps?.cancelButtonProps,
             onClick: (event) => {
               event.stopPropagation();
               onSkip();
