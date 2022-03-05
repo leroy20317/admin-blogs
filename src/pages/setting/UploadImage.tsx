@@ -2,9 +2,9 @@ import { FC, useState } from 'react';
 import { Image, message, Upload } from 'antd';
 import { LoadingOutlined, PictureOutlined, PlusOutlined } from '@ant-design/icons';
 import { useModel } from '@@/plugin-model/useModel';
-import url from '@/utils/url';
 import ImgCrop from '../../components/ImgCrop';
 import styles from './index.less';
+import { upload } from '@/services/common';
 
 interface ImgProps {
   status: string;
@@ -71,8 +71,11 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
 
   return (
     <ImgCrop
-      isSkip
       grid
+      modalProps={{
+        width: 800,
+        centered: true,
+      }}
       aspect={isAvatar ? 1 : 1920 / 1080}
       shape={isAvatar ? 'round' : 'rect'}
       beforeCrop={(file: any) => {
@@ -87,9 +90,23 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
     >
       <Upload.Dragger
         accept="image/*"
-        name="file"
         multiple={false}
-        action={`${url.upload}/${currentUser?.upload_type || 1}`}
+        customRequest={async ({ file, onError, onSuccess }) => {
+          try {
+            const res = await upload({
+              type: currentUser?.upload_type,
+              file: file as Blob,
+            });
+            onSuccess?.(res);
+          } catch (e) {
+            onError?.(new Error('网络错误'));
+          }
+          return {
+            abort() {
+              console.log('upload progress is aborted.');
+            },
+          };
+        }}
         fileList={fileList}
         className={isAvatar ? styles.avatar : styles.bg}
         headers={{

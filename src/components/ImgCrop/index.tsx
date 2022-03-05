@@ -1,91 +1,50 @@
-import React, { useState, useCallback, useRef, forwardRef } from 'react';
-import Cropper, { CropperProps } from 'react-easy-crop';
-import { Button, Modal, Slider } from 'antd';
+import React, { useState, useEffect, useCallback, useMemo, useRef, forwardRef, memo } from 'react';
+import Cropper from 'react-easy-crop';
+import { Slider as AntSlider, Modal as AntModal } from 'antd';
 import './index.less';
+import type { ReactNode } from 'react';
+import type { UploadProps } from 'antd';
+import type { RcFile } from 'antd/lib/upload';
+import type { BeforeUploadValueType, EasyCropProps, ImgCropProps } from './ImgCrop';
+import { Area } from 'react-easy-crop/types';
 
-const pkg = 'antd-img-crop';
-const noop = () => {};
+const cls = 'img-crop';
 
-const MEDIA_CLASS = `${pkg}-media`;
-
+const INIT_ZOOM = 1;
 const ZOOM_STEP = 0.1;
-
-const MIN_ROTATE = 0;
-const MAX_ROTATE = 360;
+const INIT_ROTATE = 0;
 const ROTATE_STEP = 1;
+const MIN_ROTATE = -180;
+const MAX_ROTATE = 180;
 
-interface ImgCropProps {
-  aspect?: number;
-  shape?: 'rect' | 'round';
-  grid?: boolean;
-  quality?: number;
-  fillColor?: string;
-
-  zoom?: boolean;
-  rotate?: boolean;
-  minZoom?: number;
-  maxZoom?: number;
-
-  modalTitle?: string;
-  modalWidth?: number | string;
-  modalOk?: string;
-  modalCancel?: string;
-
-  isSkip?: boolean;
-  modalSkip?: string;
-
-  beforeCrop?: (file: File, fileList: File[]) => boolean;
-  cropperProps?: Partial<CropperProps>;
-
-  children?: any;
-}
-
-interface EasyCropProps {
-  src: string;
-  aspect: number;
-  shape: 'rect' | 'round';
-  grid: boolean;
-
-  hasZoom: boolean;
-  zoomVal: number;
-  rotateVal: number;
-  setZoomVal: (zoom: number) => void;
-  setRotateVal: (rotation: number) => void;
-
-  minZoom: number;
-  maxZoom: number;
-  onComplete: Function;
-
-  cropperProps?: Partial<CropperProps>;
-}
-const EasyCrop = forwardRef<any, EasyCropProps>((props, ref) => {
+const EasyCrop = forwardRef<Cropper, EasyCropProps>((props, ref) => {
   const {
-    src,
+    image,
     aspect,
     shape,
     grid,
 
-    hasZoom,
-    zoomVal,
-    rotateVal,
-    setZoomVal,
-    setRotateVal,
-
+    zoom,
+    rotate,
     minZoom,
     maxZoom,
-    onComplete,
+
+    rotateValRef,
+    setZoomValRef,
+    setRotateValRef,
+    cropPixelsRef,
 
     cropperProps,
   } = props;
 
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [crop, onCropChange] = useState({ x: 0, y: 0 });
   const [cropSize, setCropSize] = useState({ width: 0, height: 0 });
 
   const onCropComplete = useCallback(
     (croppedArea, croppedAreaPixels) => {
-      onComplete(croppedAreaPixels);
+      cropPixelsRef.current = croppedAreaPixels;
     },
-    [onComplete],
+    [cropPixelsRef],
   );
 
   const onMediaLoaded = useCallback(
@@ -102,77 +61,134 @@ const EasyCrop = forwardRef<any, EasyCropProps>((props, ref) => {
     [aspect],
   );
 
+  const [zoomVal, setZoomVal] = useState(INIT_ZOOM);
+  const [rotateVal, setRotateVal] = useState(INIT_ROTATE);
+  rotateValRef.current = rotateVal;
+
+  useEffect(() => {
+    setZoomValRef.current = setZoomVal;
+    setRotateValRef.current = setRotateVal;
+  }, [setRotateValRef, setZoomValRef]);
+
   return (
-    <Cropper
-      {...cropperProps}
-      ref={ref}
-      image={src}
-      crop={crop}
-      cropSize={cropSize}
-      onCropChange={setCrop}
-      aspect={aspect}
-      cropShape={shape}
-      showGrid={grid}
-      zoomWithScroll={hasZoom}
-      zoom={zoomVal}
-      rotation={rotateVal}
-      onZoomChange={setZoomVal}
-      onRotationChange={setRotateVal}
-      minZoom={minZoom}
-      maxZoom={maxZoom}
-      onCropComplete={onCropComplete}
-      onMediaLoaded={onMediaLoaded}
-      classes={{ containerClassName: `${pkg}-container`, mediaClassName: MEDIA_CLASS }}
-    />
+    <>
+      <Cropper
+        {...cropperProps}
+        ref={ref}
+        image={image}
+        crop={crop}
+        cropSize={cropSize}
+        onCropChange={onCropChange}
+        aspect={aspect}
+        cropShape={shape}
+        showGrid={grid}
+        zoomWithScroll={zoom}
+        zoom={zoomVal}
+        rotation={rotateVal}
+        onZoomChange={setZoomVal}
+        onRotationChange={setRotateVal}
+        minZoom={minZoom}
+        maxZoom={maxZoom}
+        onCropComplete={onCropComplete}
+        onMediaLoaded={onMediaLoaded}
+        classes={{ containerClassName: `${cls}-container`, mediaClassName: `${cls}-media` }}
+      />
+      {zoom && (
+        <section className={`${cls}-control ${cls}-control-zoom`}>
+          <button
+            onClick={() => setZoomVal(zoomVal - ZOOM_STEP)}
+            disabled={zoomVal - ZOOM_STEP < minZoom}
+          >
+            －
+          </button>
+          <AntSlider
+            min={minZoom}
+            max={maxZoom}
+            step={ZOOM_STEP}
+            value={zoomVal}
+            onChange={setZoomVal}
+          />
+          <button
+            onClick={() => setZoomVal(zoomVal + ZOOM_STEP)}
+            disabled={zoomVal + ZOOM_STEP > maxZoom}
+          >
+            ＋
+          </button>
+        </section>
+      )}
+      {rotate && (
+        <section className={`${cls}-control ${cls}-control-rotate`}>
+          <button
+            onClick={() => setRotateVal(rotateVal - ROTATE_STEP)}
+            disabled={rotateVal === MIN_ROTATE}
+          >
+            ↺
+          </button>
+          <AntSlider
+            min={MIN_ROTATE}
+            max={MAX_ROTATE}
+            step={ROTATE_STEP}
+            value={rotateVal}
+            onChange={setRotateVal}
+          />
+          <button
+            onClick={() => setRotateVal(rotateVal + ROTATE_STEP)}
+            disabled={rotateVal === MAX_ROTATE}
+          >
+            ↻
+          </button>
+        </section>
+      )}
+    </>
   );
 });
 
-const ImgCrop = forwardRef<any, ImgCropProps>((props, ref) => {
+const EasyCropMemo = memo(EasyCrop);
+
+const ImgCrop = forwardRef<Cropper, ImgCropProps & { children?: ReactNode }>((props, ref) => {
   const {
     aspect = 1,
     shape = 'rect',
     grid = false,
     quality = 0.4,
+    fillColor = 'white',
 
     zoom = true,
     rotate = false,
     minZoom = 1,
     maxZoom = 3,
-    fillColor = 'white',
 
-    modalTitle = '编辑图片',
-    modalWidth,
-    modalOk = '确定',
-    modalCancel = '取消',
-
-    isSkip = false,
-    modalSkip = '跳过裁剪',
+    modalTitle,
+    onModalOk,
+    onModalCancel,
+    modalProps,
 
     beforeCrop,
-    children,
-
+    onUploadFail,
     cropperProps,
+    children,
   } = props;
-  const hasZoom = zoom === true;
-  const hasRotate = rotate === true;
 
-  const [src, setSrc] = useState<any>('');
-  const [zoomVal, setZoomVal] = useState(1);
-  const [rotateVal, setRotateVal] = useState(0);
-
-  const beforeUploadRef = useRef<any>();
-  const fileRef = useRef<any>();
-  const resolveRef = useRef<any>(noop);
-  const rejectRef = useRef<any>(noop);
-
-  const cropPixelsRef = useRef<any>();
+  const cb = useRef<
+    Pick<ImgCropProps, 'onModalOk' | 'onModalCancel' | 'beforeCrop' | 'onUploadFail'>
+  >({});
+  cb.current.onModalOk = onModalOk;
+  cb.current.onModalCancel = onModalCancel;
+  cb.current.beforeCrop = beforeCrop;
+  cb.current.onUploadFail = onUploadFail;
 
   /**
    * Upload
    */
-  const renderUpload = useCallback(() => {
-    const upload: any = Array.isArray(children) ? children[0] : children;
-    const { beforeUpload, accept, ...restUploadProps } = upload?.props || {};
+  const [image, setImage] = useState('');
+  const fileRef = useRef<RcFile>();
+  const resolveRef = useRef<(file: BeforeUploadValueType) => void>();
+  const rejectRef = useRef<(err: Error) => void>();
+  const beforeUploadRef = useRef<UploadProps['beforeUpload']>();
+
+  const uploadComponent = useMemo(() => {
+    const upload = Array.isArray(children) ? children[0] : children;
+    const { beforeUpload, accept, ...restUploadProps } = upload.props;
     beforeUploadRef.current = beforeUpload;
 
     return {
@@ -180,70 +196,64 @@ const ImgCrop = forwardRef<any, ImgCropProps>((props, ref) => {
       props: {
         ...restUploadProps,
         accept: accept || 'image/*',
-        beforeUpload: (file: File, fileList: File[]) =>
-          new Promise((resolve, reject) => {
-            if (beforeCrop && !beforeCrop(file, fileList)) {
+        beforeUpload: (file: RcFile, fileList: RcFile[]) => {
+          return new Promise(async (resolve, reject) => {
+            if (cb.current.beforeCrop && !(await cb.current.beforeCrop(file, fileList))) {
               reject();
               return;
             }
 
             fileRef.current = file;
-            resolveRef.current = resolve;
-            rejectRef.current = reject;
+            resolveRef.current = (newFile) => {
+              cb.current.onModalOk?.(newFile);
+              resolve(newFile);
+            };
+            rejectRef.current = (uploadErr) => {
+              cb.current.onUploadFail?.(uploadErr);
+              reject(uploadErr);
+            };
 
             const reader = new FileReader();
-            reader.addEventListener('load', () => {
-              setSrc(reader.result);
-            });
+            reader.addEventListener(
+              'load',
+              () => typeof reader.result === 'string' && setImage(reader.result),
+            );
             reader.readAsDataURL(file);
-          }),
+          });
+        },
       },
     };
-  }, [beforeCrop, children]);
+  }, [children]);
 
   /**
-   * EasyCrop
+   * Crop
    */
-  const onComplete = useCallback((croppedAreaPixels) => {
-    cropPixelsRef.current = croppedAreaPixels;
-  }, []);
+  const rotateValRef = useRef<number>();
+  const setZoomValRef = useRef<React.Dispatch<React.SetStateAction<number>>>();
+  const setRotateValRef = useRef<React.Dispatch<React.SetStateAction<number>>>();
+  const cropPixelsRef = useRef<Area>();
 
-  /**
-   * Controls
-   */
-  const isMinZoom = zoomVal - ZOOM_STEP < minZoom;
-  const isMaxZoom = zoomVal + ZOOM_STEP > maxZoom;
-  const isMinRotate = rotateVal === MIN_ROTATE;
-  const isMaxRotate = rotateVal === MAX_ROTATE;
+  const onClose = () => {
+    setImage('');
+    setZoomValRef.current?.(INIT_ZOOM);
+    setRotateValRef.current?.(INIT_ROTATE);
+  };
 
-  const subZoomVal = useCallback(() => {
-    if (!isMinZoom) setZoomVal(zoomVal - ZOOM_STEP);
-  }, [isMinZoom, zoomVal]);
-
-  const addZoomVal = useCallback(() => {
-    if (!isMaxZoom) setZoomVal(zoomVal + ZOOM_STEP);
-  }, [isMaxZoom, zoomVal]);
-
-  const subRotateVal = useCallback(() => {
-    if (!isMinRotate) setRotateVal(rotateVal - ROTATE_STEP);
-  }, [isMinRotate, rotateVal]);
-
-  const addRotateVal = useCallback(() => {
-    if (!isMaxRotate) setRotateVal(rotateVal + ROTATE_STEP);
-  }, [isMaxRotate, rotateVal]);
-
-  const onClose = useCallback(() => {
-    setSrc('');
-    setZoomVal(1);
-    setRotateVal(0);
+  const onCancel = useCallback(() => {
+    cb.current.onModalCancel?.();
+    onClose();
   }, []);
 
   const onSkip = useCallback(async () => {
     onClose();
-    let currentFile = fileRef.current;
+
+    // get the new image
+    const currentFile = fileRef.current;
+
+    if (!currentFile) return;
 
     if (typeof beforeUploadRef.current !== 'function') {
-      resolveRef.current(currentFile);
+      return resolveRef.current?.(currentFile);
     }
 
     const res = beforeUploadRef.current(currentFile, [currentFile]);
@@ -253,185 +263,161 @@ const ImgCrop = forwardRef<any, ImgCropProps>((props, ref) => {
       return;
     }
 
-    if (res === true) resolveRef.current(currentFile);
-    if (res === false) rejectRef.current('not upload');
-    if (res && typeof res.then === 'function') {
+    if (res === true) return resolveRef.current?.(currentFile);
+    if (res === false) return rejectRef.current?.(new Error('not upload'));
+    if (res && res instanceof Promise) {
       try {
         const passedFile = await res;
-        const objectType = Object.prototype.toString.call(passedFile);
-        if (objectType === '[object File]' || objectType === '[object Blob]')
-          currentFile = passedFile;
-        resolveRef.current(currentFile);
-      } catch (err) {
-        rejectRef.current(err);
+        const fileType: any = Object.prototype.toString.call(passedFile);
+        if (fileType instanceof File || fileType instanceof Blob) {
+          return resolveRef.current?.(passedFile);
+        }
+        resolveRef.current?.(currentFile);
+      } catch (err: any) {
+        rejectRef.current?.(err);
       }
     }
-  }, [onClose]);
+  }, []);
 
   const onOk = useCallback(async () => {
     onClose();
 
-    const naturalImg: any = document.querySelector(`.${MEDIA_CLASS}`);
-    const { naturalWidth, naturalHeight } = naturalImg;
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
-    // create a max canvas to cover the source image after rotated
-    const maxLen = Math.sqrt(naturalWidth ** 2 + naturalHeight ** 2);
-    canvas.width = maxLen;
-    canvas.height = maxLen;
+    if (!ctx) return;
+    const imgSource = document.querySelector(`.${cls}-media`) as CanvasImageSource & {
+      naturalWidth: number;
+      naturalHeight: number;
+    };
+    const {
+      width: cropWidth = 0,
+      height: cropHeight = 0,
+      x: cropX = 0,
+      y: cropY = 0,
+    } = cropPixelsRef.current || {};
 
-    // rotate the image
-    if (hasRotate && rotateVal > 0 && rotateVal < 360) {
-      const halfMax = maxLen / 2;
-      ctx?.translate(halfMax, halfMax);
-      ctx?.rotate((rotateVal * Math.PI) / 180);
-      ctx?.translate(-halfMax, -halfMax);
+    if (rotate && rotateValRef.current !== INIT_ROTATE) {
+      const { naturalWidth: imgWidth, naturalHeight: imgHeight } = imgSource;
+      const angle = (rotateValRef.current || 0) * (Math.PI / 180);
+
+      // get container for rotated image
+      const sine = Math.abs(Math.sin(angle));
+      const cosine = Math.abs(Math.cos(angle));
+      const squareWidth = imgWidth * cosine + imgHeight * sine;
+      const squareHeight = imgHeight * cosine + imgWidth * sine;
+
+      canvas.width = squareWidth;
+      canvas.height = squareHeight;
+      ctx.fillStyle = fillColor;
+      ctx.fillRect(0, 0, squareWidth, squareHeight);
+
+      // rotate container
+      const squareHalfWidth = squareWidth / 2;
+      const squareHalfHeight = squareHeight / 2;
+      ctx.translate(squareHalfWidth, squareHalfHeight);
+      ctx.rotate(angle);
+      ctx.translate(-squareHalfWidth, -squareHalfHeight);
+
+      // draw rotated image
+      const imgX = (squareWidth - imgWidth) / 2;
+      const imgY = (squareHeight - imgHeight) / 2;
+      ctx.drawImage(imgSource, 0, 0, imgWidth, imgHeight, imgX, imgY, imgWidth, imgHeight);
+
+      // crop rotated image
+      const imgData = ctx.getImageData(0, 0, squareWidth, squareHeight);
+      canvas.width = cropWidth;
+      canvas.height = cropHeight;
+      ctx.putImageData(imgData, -cropX, -cropY);
+    } else {
+      canvas.width = cropWidth;
+      canvas.height = cropHeight;
+      ctx.fillStyle = fillColor;
+      ctx.fillRect(0, 0, cropWidth, cropHeight);
+
+      ctx.drawImage(imgSource, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
     }
 
-    if (ctx) ctx.fillStyle = fillColor;
-    ctx?.fillRect(0, 0, canvas.width, canvas.height);
-
-    // draw the source image in the center of the max canvas
-    const left = (maxLen - naturalWidth) / 2;
-    const top = (maxLen - naturalHeight) / 2;
-    ctx?.drawImage(naturalImg, left, top);
-
-    // shrink the max canvas to the crop area size, then align two center points
-    const maxImgData = ctx?.getImageData(0, 0, maxLen, maxLen);
-    const { width, height, x, y } = cropPixelsRef.current;
-    canvas.width = width;
-    canvas.height = height;
-    if (maxImgData) ctx?.putImageData(maxImgData, Math.round(-left - x), Math.round(-top - y));
-
     // get the new image
-    const { type, name, uid } = fileRef.current;
-    canvas.toBlob(
-      async (blob) => {
-        if (!blob) return;
-        let newFile: any = new File([blob], name, { type });
-        newFile.uid = uid;
+    const { type, name = '', uid } = fileRef.current || {};
+    const onBlob = async (blob: Blob | null) => {
+      if (!blob) return;
+      const newFile = Object.assign(new File([blob], name, { type }), { uid }) as RcFile;
 
-        if (typeof beforeUploadRef.current !== 'function') {
-          resolveRef.current(newFile);
-        }
+      if (typeof beforeUploadRef.current !== 'function') {
+        return resolveRef.current?.(newFile);
+      }
 
-        const res = beforeUploadRef.current(newFile, [newFile]);
+      const res = beforeUploadRef.current(newFile, [newFile]);
 
-        if (typeof res !== 'boolean' && !res) {
-          console.error('beforeUpload must return a boolean or Promise');
-          return;
-        }
+      if (typeof res !== 'boolean' && !res) {
+        console.error('beforeUpload must return a boolean or Promise');
+        return;
+      }
 
-        if (res === true) resolveRef.current(newFile);
-        if (res === false) rejectRef.current('not upload');
-        if (res && typeof res.then === 'function') {
-          try {
-            const passedFile = await res;
-            const objectType = Object.prototype.toString.call(passedFile);
-            if (objectType === '[object File]' || objectType === '[object Blob]')
-              newFile = passedFile;
-            resolveRef.current(newFile);
-          } catch (err) {
-            rejectRef.current(err);
+      if (res === true) return resolveRef.current?.(newFile);
+      if (res === false) return rejectRef.current?.(new Error('not upload'));
+      if (res && res instanceof Promise) {
+        try {
+          const passedFile = await res;
+          const fileType: any = Object.prototype.toString.call(passedFile);
+          if (fileType instanceof File || fileType instanceof Blob) {
+            return resolveRef.current?.(passedFile);
           }
+          resolveRef.current?.(newFile);
+        } catch (err: any) {
+          rejectRef.current?.(err);
         }
-      },
-      type,
-      quality,
-    );
-  }, [hasRotate, onClose, quality, rotateVal]);
+      }
+    };
+    canvas.toBlob(onBlob, type, quality);
+  }, [fillColor, quality, rotate]);
 
-  const footer = isSkip
-    ? [
-        <Button key="back" onClick={onClose}>
-          {modalCancel}
-        </Button>,
-        <Button key="skip" type="dashed" danger onClick={onSkip}>
-          {modalSkip}
-        </Button>,
-        <Button key="ok" type="primary" onClick={onOk}>
-          {modalOk}
-        </Button>,
-      ]
-    : [
-        <Button key="back" onClick={onClose}>
-          {modalCancel}
-        </Button>,
-        <Button key="ok" type="primary" onClick={onOk}>
-          {modalOk}
-        </Button>,
-      ];
-
-  return (
+  const getComponent = (titleOfModal: string) => (
     <>
-      {renderUpload()}
-      {src && (
-        <Modal
+      {uploadComponent}
+      {image && (
+        <AntModal
           visible={true}
-          wrapClassName={`${pkg}-modal`}
-          title={modalTitle}
+          wrapClassName={`${cls}-modal`}
+          title={titleOfModal}
           onOk={onOk}
-          onCancel={onClose}
-          footer={footer}
+          onCancel={onCancel}
           maskClosable={false}
           destroyOnClose
-          width={modalWidth}
+          okText="确定"
+          cancelText="跳过"
+          {...modalProps}
+          cancelButtonProps={{
+            ...modalProps.cancelButtonProps,
+            onClick: (event) => {
+              event.stopPropagation();
+              onSkip();
+            },
+          }}
         >
-          <EasyCrop
+          <EasyCropMemo
             ref={ref}
-            src={src}
+            image={image}
             aspect={aspect}
             shape={shape}
             grid={grid}
-            hasZoom={hasZoom}
-            zoomVal={zoomVal}
-            rotateVal={rotateVal}
-            setZoomVal={setZoomVal}
-            setRotateVal={setRotateVal}
+            zoom={zoom}
+            rotate={rotate}
+            rotateValRef={rotateValRef}
+            setZoomValRef={setZoomValRef}
+            setRotateValRef={setRotateValRef}
             minZoom={minZoom}
             maxZoom={maxZoom}
-            onComplete={onComplete}
+            cropPixelsRef={cropPixelsRef}
             cropperProps={cropperProps}
           />
-          {hasZoom && (
-            <div className={`${pkg}-control zoom`}>
-              <button onClick={subZoomVal} disabled={isMinZoom}>
-                －
-              </button>
-              <Slider
-                min={minZoom}
-                max={maxZoom}
-                step={ZOOM_STEP}
-                value={zoomVal}
-                onChange={setZoomVal}
-              />
-              <button onClick={addZoomVal} disabled={isMaxZoom}>
-                ＋
-              </button>
-            </div>
-          )}
-          {hasRotate && (
-            <div className={`${pkg}-control rotate`}>
-              <button onClick={subRotateVal} disabled={isMinRotate}>
-                ↺
-              </button>
-              <Slider
-                min={MIN_ROTATE}
-                max={MAX_ROTATE}
-                step={ROTATE_STEP}
-                value={rotateVal}
-                onChange={setRotateVal}
-              />
-              <button onClick={addRotateVal} disabled={isMaxRotate}>
-                ↻
-              </button>
-            </div>
-          )}
-        </Modal>
+        </AntModal>
       )}
     </>
   );
+
+  return getComponent(modalTitle || '编辑图片');
 });
 
 export default ImgCrop;

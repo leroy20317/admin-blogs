@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Image, message, Upload } from 'antd';
 import { LoadingOutlined, PictureOutlined } from '@ant-design/icons';
 import { useModel } from '@@/plugin-model/useModel';
-import url from '@/utils/url';
 import ImgCrop from '../ImgCrop';
+import { upload } from '@/services/common';
 
 const Img = ({
   status,
@@ -55,9 +55,12 @@ const UploadImage = ({ value, onChange }: Props) => {
 
   return (
     <ImgCrop
-      isSkip
       aspect={680 / 440}
       grid
+      modalProps={{
+        width: 800,
+        centered: true,
+      }}
       beforeCrop={(file: any) => {
         let result = true;
         const { size } = file;
@@ -70,9 +73,23 @@ const UploadImage = ({ value, onChange }: Props) => {
     >
       <Upload.Dragger
         accept="image/*"
-        name="file"
         multiple={false}
-        action={`${url.upload}/${currentUser?.upload_type || ''}`}
+        customRequest={async ({ file, onError, onSuccess }) => {
+          try {
+            const res = await upload({
+              type: currentUser?.upload_type,
+              file: file as Blob,
+            });
+            onSuccess?.(res);
+          } catch (e) {
+            onError?.(new Error('网络错误'));
+          }
+          return {
+            abort() {
+              console.log('upload progress is aborted.');
+            },
+          };
+        }}
         fileList={fileList}
         headers={{
           Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
