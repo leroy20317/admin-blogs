@@ -63,7 +63,7 @@ const ArticleInfo: React.FC = () => {
   const onFinish = async (values: any) => {
     const params = {
       title: values.title,
-      content: values.editor.val,
+      content: values.content,
       time: values.time.format('YYYY-MM-DD HH:mm:ss'),
       describe: values.describe,
       image: {

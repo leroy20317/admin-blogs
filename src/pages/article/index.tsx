@@ -27,7 +27,7 @@ const Article: React.FC = () => {
 
   // 新窗口打开文章
   const view = (id: string) => {
-    window.open(`${url.webHost}/${id}`);
+    window.open(`${url.webHost}/article/${id}`);
   };
   // 编辑文章
   const edit = (id: string) => {
