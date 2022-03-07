@@ -15,7 +15,7 @@ import { useModel } from 'umi';
 import styles from './index.less';
 import { upload } from '@/services/common';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import vscDarkPlus from 'react-syntax-highlighter/dist/esm/styles/prism/vsc-dark-plus';
+import theme from 'react-syntax-highlighter/dist/esm/styles/prism/coy';
 
 interface Props {
   value?: string;
@@ -138,9 +138,16 @@ const Editor: FC<Props> = ({ value, onChange, height = 800 }) => {
                 const match = /language-(\w+)/.exec(className || '');
                 return !inline && match ? (
                   <SyntaxHighlighter
-                    style={vscDarkPlus}
+                    style={theme}
                     language={match[1]}
                     PreTag="div"
+                    customStyle={{
+                      fontSize: 14,
+                      overflow: 'auto',
+                      backgroundColor: '#f6f8fa',
+                      padding: 16,
+                    }}
+                    codeTagProps={{ className }}
                     {...props}
                   >
                     {String(children).replace(/\n$/, '')}
