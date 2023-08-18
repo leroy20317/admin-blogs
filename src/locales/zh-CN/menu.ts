@@ -57,5 +57,6 @@ export default {
   'menu.comment': 'Comment',
   'menu.myself': 'Myself',
   'menu.setting': 'Setting',
+  'menu.clash': 'Clash',
   'menu.leave': 'Leave',
 };

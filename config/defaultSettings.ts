@@ -15,7 +15,7 @@ const Settings: LayoutSettings & {
   title: 'admin for blogs',
   pwa: false,
   logo: undefined,
-  iconfontUrl: '//at.alicdn.com/t/font_2341199_zo7uq67jsvq.js',
+  iconfontUrl: '//at.alicdn.com/t/c/font_2341199_mke80l94vni.js',
 };
 
 export default Settings;

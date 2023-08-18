@@ -51,13 +51,6 @@
     component: './envelope/info',
   },
 
-  // {
-  //   path: '/comment',
-  //   name: 'comment',
-  //   icon: 'icon-lightning',
-  //   component: './comment/index',
-  // },
-
   {
     path: '/myself',
     name: 'myself',
@@ -70,6 +63,12 @@
     name: 'setting',
     icon: 'icon-moon-night',
     component: './setting/index',
+  },
+  {
+    path: '/clash',
+    name: 'clash',
+    icon: 'icon-star',
+    component: './clash/index',
   },
 
   {

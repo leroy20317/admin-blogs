@@ -38,17 +38,20 @@ ol {
   left: 0;
   display: flex;
   width: 90vw;
-  max-width: 1500px;
+  max-width: ~'min(1500px, 90vw)';
   height: 60vw;
   min-height: auto;
-  max-height: 1000px;
+  max-height: ~'min(1000px, 90vh)';
   margin: auto;
   overflow: hidden;
-  background: #fff;
   background: #0e8bff;
   border-radius: 20px;
   -webkit-box-shadow: 0 5px 40px #d2eaff;
   box-shadow: 0 5px 40px #d2eaff;
+
+  @media (max-width: 1000px) {
+    height: auto;
+  }
 
   .ant-layout {
     background-color: @primary-color;

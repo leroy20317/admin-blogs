@@ -22,6 +22,15 @@ type BgMusic = {
 };
 
 declare namespace API {
+  export type Response<T> = {
+    status: string;
+    body: T;
+  };
+  export type ResponseList<T> = {
+    total: number;
+    data: T;
+    page: number;
+  };
   export type CurrentUser = {
     name: string;
     avatar: string;
@@ -87,11 +96,7 @@ declare namespace API {
     __v: number;
   };
 
-  export type ArticleList = {
-    total: number;
-    data: Article[];
-    page: number;
-  };
+  export type ArticleList = ResponseList<Article[]>;
 
   export type Envelope = {
     _id: string;
@@ -101,11 +106,7 @@ declare namespace API {
     __v: number;
   };
 
-  export type EnvelopeList = {
-    total: number;
-    data: Envelope[];
-    page: number;
-  };
+  export type EnvelopeList = ResponseList<Envelope[]>;
 
   export type Comment = {
     status: number;
@@ -131,6 +132,19 @@ declare namespace API {
     total: number;
     data: Comment[];
     page: number;
+  };
+
+  export type Clash = {
+    rules: {
+      _id: string;
+      mode: string;
+      site: string;
+      type: string;
+      resolve: '0' | '1';
+      remark: string;
+    }[];
+    modes: { _id: string; id: string; name: string }[];
+    types: { _id: string; id: string; name: string; write: boolean }[];
   };
 
   export type Myself = {
