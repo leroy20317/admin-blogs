@@ -25,7 +25,7 @@
     "prettier": "prettier -c --write \"src/**/*\"",
     "serve": "umi-serve",
     "start": "cross-env UMI_ENV=dev umi dev",
-    "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none UMI_ENV=dev umi dev",
+    "start:dev": "cross-env NODE_OPTIONS=--openssl-legacy-provider REACT_APP_ENV=dev MOCK=none UMI_ENV=dev umi dev",
     "start:no-mock": "cross-env MOCK=none UMI_ENV=dev umi dev",
     "start:no-ui": "cross-env UMI_UI=none UMI_ENV=dev umi dev",
     "start:pre": "cross-env REACT_APP_ENV=pre UMI_ENV=dev umi dev",
@@ -72,7 +72,7 @@
     "react-helmet-async": "^1.2.3",
     "react-markdown": "^8.0.0",
     "react-syntax-highlighter": "^15.4.5",
-    "umi": "^3.5.21"
+    "umi": "^3.5.41"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.1.5",
@@ -114,7 +114,8 @@
     "stylelint": "^13.0.0",
     "swagger-ui-react": "^4.5.2",
     "typescript": "^4.6.2",
-    "umi-serve": "^1.9.10"
+    "umi-serve": "^1.9.10",
+    "webpack": "^5.88.2"
   },
   "engines": {
     "node": ">=10.0.0"

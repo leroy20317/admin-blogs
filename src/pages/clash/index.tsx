@@ -3,131 +3,51 @@
  * @date: 2023-08-17 16:38
  * @description：clash
  */
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
-import type { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { FC, useEffect, useState } from 'react';
+import type { FC, Key } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Col, List, message, Popconfirm, Row, Space, Tooltip, Table } from 'antd';
+import type { InputRef } from 'antd';
+import { Button, Input, Popconfirm, Space } from 'antd';
 import styles from './index.less';
-import { history, useModel } from 'umi';
-import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
-import url from '@/utils/url';
-import { del } from '@/services/article';
-import moment from 'moment';
-import type { ProColumns } from '@ant-design/pro-components';
-import { EditableProTable, ProCard, ProFormField, ProFormRadio } from '@ant-design/pro-components';
+import { QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { EditableProTable } from '@ant-design/pro-components';
+import { createRule, delRule, fetch, updateRule } from '@/services/clash';
 
-interface TableParams {
-  pagination?: TablePaginationConfig;
-  sortField?: string;
-  sortOrder?: string;
-  filters?: Record<string, FilterValue | null>;
-}
+type Rule = API.Clash['rules'][number];
 
 const Clash: FC = () => {
-  const { rules, getRuleList, loading, getTypeList, types, getModeList, modes } = useModel(
-    'clash',
-    (model) => model,
-  );
+  const [types, setTypes] = useState<API.Clash['types']>([]);
+  const [modes, setModes] = useState<API.Clash['modes']>([]);
 
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
+  const actionRef = useRef<ActionType>();
+  const [total, setTotal] = useState(0);
+  const [editableKeys, setEditableRowKeys] = useState<Key[]>([]);
 
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const getTypeList = useCallback(() => {
+    fetch({ mode: 'types' }).then((res) => {
+      if (res.status === 'success') {
+        setTypes(res.body);
+      }
+    });
+  }, []);
+
+  const getModeList = useCallback(() => {
+    fetch({ mode: 'modes' }).then((res) => {
+      if (res.status === 'success') {
+        setModes(res.body);
+      }
+    });
+  }, []);
 
   useEffect(() => {
-    getRuleList();
     getModeList();
     getTypeList();
   }, []);
 
-  const pageChange = (page: number) => {
-    getRuleList({ page });
-  };
+  const searchInput = useRef<InputRef>(null);
 
-  // 新窗口打开文章
-  const view = (id: string) => {
-    window.open(`${url.webHost}/article/${id}`);
-  };
-  // 编辑文章
-  const edit = (id: string) => {
-    history.push(`/article-info?id=${id}`);
-  };
-  // 删除文章
-  const deleteItem = (id: string) => {
-    del({ id }).then((res) => {
-      if (res.status === 'success') {
-        message.success(res.message, 1);
-        pageChange(rules.page || 1);
-      } else {
-        message.error(res.message || '删除失败', 1);
-      }
-    });
-  };
-
-  // const columns: ColumnsType<API.Clash['rules'][number]> = [
-  //   {
-  //     title: 'Mode',
-  //     dataIndex: 'mode',
-  //     filters: modes.map((mode) => ({ text: mode.name, value: mode.id })),
-  //     render: (mode) => modes.find((ele) => ele.id === mode)?.name,
-  //     width: '15%',
-  //   },
-  //   {
-  //     title: 'Site',
-  //     dataIndex: 'site',
-  //     width: '30%',
-  //   },
-  //   {
-  //     title: 'Type',
-  //     dataIndex: 'type',
-  //     filters: types.map((type) => ({ text: type.name, value: type.id })),
-  //     render: (type) => types.find((ele) => ele.id === type)?.name,
-  //     width: '15%',
-  //   },
-  //   {
-  //     title: 'Resolve',
-  //     dataIndex: 'resolve',
-  //     filters: [
-  //       { text: 'True', value: 1 },
-  //       { text: 'False', value: 0 },
-  //     ],
-  //     render: (resolve) => (resolve ? 'resolve' : 'no-resolve'),
-  //     width: '5%',
-  //   },
-  //   {
-  //     title: 'Remark',
-  //     dataIndex: 'remark',
-  //     width: '20%',
-  //   },
-  //   {
-  //     title: 'Action',
-  //     width: '15%',
-  //     render: (_, item) => {
-  //       return (
-  //         <Space align="start" size="middle">
-  //           <Tooltip title="Edit Rule">
-  //             <EditOutlined className={styles.icon} onClick={() => edit(item._id)} />
-  //           </Tooltip>
-  //           <Popconfirm
-  //             title="是否删除该规则?"
-  //             onConfirm={() => deleteItem(item._id)}
-  //             okText="确定"
-  //             cancelText="取消"
-  //           >
-  //             <DeleteOutlined className={`${styles.icon} ${styles.delete}`} />
-  //           </Popconfirm>
-  //         </Space>
-  //       );
-  //     },
-  //   },
-  // ];
-
-  const columns: ProColumns<API.Clash['rules'][number]>[] = [
+  const columns: ProColumns<Rule>[] = [
     {
       title: 'Mode',
       dataIndex: 'mode',
@@ -139,25 +59,63 @@ const Clash: FC = () => {
         };
         return prev;
       }, {}),
-      width: '10%',
-      formItemProps: (form) => {
+      width: 150,
+      formItemProps: () => {
         return {
           rules: [{ required: true, message: '此项为必填项' }],
         };
-      },
-      // 第一行不允许编辑
-      editable: (text, record, index) => {
-        return index !== 0;
       },
     },
     {
       title: 'Site',
       dataIndex: 'site',
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+        <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+          <Input
+            ref={searchInput}
+            placeholder={`Search site`}
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => confirm()}
+            style={{ marginBottom: 8, display: 'block' }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => confirm()}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+            <Button type="link" size="small" onClick={close}>
+              close
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered: boolean) => (
+        <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      ),
+      onFilterDropdownOpenChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
+      formItemProps: () => {
+        return {
+          rules: [{ required: true, message: '此项为必填项' }],
+        };
+      },
     },
     {
       title: 'Type',
       dataIndex: 'type',
-      filters: types.map((type) => ({ text: type.name, value: type.id })),
+      filters: types.map((type: { name: any; id: any }) => ({ text: type.name, value: type.id })),
       key: 'type',
       valueType: 'select',
       valueEnum: types.reduce((prev, current) => {
@@ -166,6 +124,11 @@ const Clash: FC = () => {
         };
         return prev;
       }, {}),
+      formItemProps: () => {
+        return {
+          rules: [{ required: true, message: '此项为必填项' }],
+        };
+      },
       width: '15%',
     },
     {
@@ -184,7 +147,13 @@ const Clash: FC = () => {
           text: 'no-resolve',
         },
       },
-      render: (resolve) => (resolve ? 'resolve' : 'no-resolve'),
+      render: (resolve) => (resolve === '1' ? 'resolve' : 'no-resolve'),
+
+      formItemProps: () => {
+        return {
+          rules: [{ required: true, message: '此项为必填项' }],
+        };
+      },
       width: 120,
     },
     {
@@ -204,35 +173,35 @@ const Clash: FC = () => {
         >
           编辑
         </a>,
-        <a
+        <Popconfirm
           key="delete"
-          onClick={() => {
-            console.log('delete');
+          title="确认删除此行吗？"
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          onConfirm={async () => {
+            await delRule({ id: record._id });
+            setTotal(total - 1);
+            actionRef.current?.reloadAndRest?.();
           }}
         >
-          删除
-        </a>,
+          <a>删除</a>
+        </Popconfirm>,
       ],
     },
   ];
 
-  const getRandomuserParams = (params: TableParams) => ({
-    results: params.pagination?.pageSize,
-    page: params.pagination?.current,
-    ...params,
-  });
-
   return (
     <PageContainer
       className={styles.clash}
-      pageHeaderRender={() => <h2 className={styles.header}>clash订阅列表 ({rules?.total})</h2>}
+      pageHeaderRender={() => <h2 className={styles.header}>clash订阅列表 ({total})</h2>}
     >
-      <EditableProTable<API.Clash['rules'][number]>
+      <EditableProTable<Rule>
+        ghost
         rowKey="_id"
+        actionRef={actionRef}
         recordCreatorProps={{
           position: 'top',
           record: () => ({
-            _id: Math.random().toString(),
+            _id: 'create',
             mode: '1',
             site: '',
             type: '1',
@@ -240,22 +209,44 @@ const Clash: FC = () => {
             remark: '',
           }),
         }}
-        loading={loading}
         columns={columns}
-        // request={async () => ({
-        //   data: defaultData,
-        //   total: 3,
-        //   success: true,
-        // })}
-        value={rules.data}
-        onChange={(...params) => {
-          console.log('onChange', params);
+        request={async ({ pageSize, current }, sort, filter) => {
+          const params = Object.entries(filter || {}).reduce(
+            (prev, [key, value]) => {
+              if (value)
+                prev[key] = Array.isArray(value) && value.length > 0 ? value.join(',') : value;
+              return prev;
+            },
+            { page: current || 1, size: pageSize || 10 },
+          );
+
+          const { body: res }: { body: API.ResponseList<API.Clash['rules']> } = await fetch({
+            mode: 'rules',
+            params,
+          });
+          console.log('sort, filter, params, res', sort, filter, params, res);
+          if (Object.values(filter).filter((ele) => !!ele).length < 1) {
+            setTotal(res.total);
+          }
+
+          return {
+            data: res.data,
+            total: res.total,
+            success: true,
+          };
         }}
         editable={{
           type: 'multiple',
           editableKeys,
-          onSave: async (rowKey, data, row) => {
-            console.log(rowKey, data, row);
+          onSave: async (rowKey, { _id, index, ...data }, originRow) => {
+            console.log(rowKey, _id, index, data, originRow);
+            if (_id === 'create') {
+              await createRule(data);
+              setTotal(total + 1);
+            } else {
+              await updateRule({ id: _id, data });
+            }
+            actionRef.current?.reloadAndRest?.();
           },
           onChange: setEditableRowKeys,
         }}
@@ -263,10 +254,6 @@ const Clash: FC = () => {
           size: 'default',
           hideOnSinglePage: true,
           position: ['bottomRight'],
-          current: rules.page,
-          pageSize: 10,
-          total: rules.total,
-          onChange: pageChange,
         }}
       />
     </PageContainer>
