@@ -73,7 +73,7 @@ const Clash: FC = () => {
         <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
           <Input
             ref={searchInput}
-            placeholder={`Search site`}
+            placeholder={`Search Site`}
             value={selectedKeys[0]}
             onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
             onPressEnter={() => confirm()}
@@ -91,9 +91,6 @@ const Clash: FC = () => {
             </Button>
             <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
               Reset
-            </Button>
-            <Button type="link" size="small" onClick={close}>
-              close
             </Button>
           </Space>
         </div>
@@ -147,7 +144,7 @@ const Clash: FC = () => {
           text: 'no-resolve',
         },
       },
-      render: (resolve) => (resolve === '1' ? 'resolve' : 'no-resolve'),
+      renderText: (resolve) => (resolve === '1' ? 'resolve' : 'no-resolve'),
 
       formItemProps: () => {
         return {
