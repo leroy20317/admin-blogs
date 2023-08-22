@@ -36,7 +36,7 @@ rd.each(
         // return result;
       }).then(function () {
         console.log(
-          `上传文件至 https://cdn.leroy.net.cn/${f.replace(
+          `上传文件至 https://cdn.leroytop.com/${f.replace(
             path.join(__dirname, '/dist'),
             folderName,
           )} 成功`,

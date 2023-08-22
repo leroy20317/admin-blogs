@@ -1,8 +1,8 @@
 const prod: boolean = process.env.NODE_ENV === 'production';
 const Url = {
-  webHost: 'https://www.leroy.net.cn',
-  staticHost: prod ? '//cdn.leroy.net.cn/admin-blogs/dist/' : '/',
-  // staticHost: '//static.leroy.net.cn/',
+  webHost: 'https://www.leroytop.com',
+  staticHost: prod ? '//cdn.leroytop.com/admin-blogs/dist/' : '/',
+  // staticHost: '//static.leroytop.com/',
 
   login: `/user/login`, // 登录
   register: `/user/register`, // 创建用户

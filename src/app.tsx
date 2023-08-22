@@ -131,8 +131,8 @@ const errorHandler = (error: ResponseError) => {
 };
 
 export const request: RequestConfig = {
-  // prefix: process.env.NODE_ENV === 'production' ? '//api.leroy.net.cn/admin' : 'http://local.leroy.net.cn:5001/admin',
-  prefix: '//api.leroy.net.cn/admin',
+  // prefix: process.env.NODE_ENV === 'production' ? '//api.leroytop.com/admin' : 'http://local.leroytop.com:5001/admin',
+  prefix: '//api.leroytop.com/admin',
   errorHandler,
   requestInterceptors: [
     (url, options) => {

@@ -17,6 +17,6 @@ export default defineConfig({
   // styles: [`/dist/vditor/dist/index.css`],
   devServer: {
     port: 5002,
-    host: 'local.leroy.net.cn',
+    host: 'local.leroytop.com',
   },
 });

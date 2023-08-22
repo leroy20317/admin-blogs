@@ -56,7 +56,7 @@ export default defineConfig({
   webpack5: {},
   exportStatic: {},
   // styles: [`https://cdn.leroy.net.cn/${npm_package_name}/dist/vditor/dist/index.css`],
-  publicPath: `https://cdn.leroy.net.cn/${npm_package_name}/`,
+  publicPath: `https://cdn.leroytop.com/${npm_package_name}/`,
   terserOptions: {
     compress: {
       drop_console: true,
