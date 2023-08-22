@@ -31,3 +31,23 @@ export async function delRule({ id }: Params) {
     method: 'delete',
   });
 }
+
+export async function updateProxy({ id, data }: { id: any; data: Record<string, any> }) {
+  return request(`${url.clash}/proxies/${id || ''}`, {
+    method: 'put',
+    data,
+  });
+}
+
+export async function createProxy(data: Params) {
+  return request(`${url.clash}/proxies`, {
+    method: 'post',
+    data,
+  });
+}
+
+export async function delProxy({ id }: Params) {
+  return request(`${url.clash}/proxies/${id}`, {
+    method: 'delete',
+  });
+}

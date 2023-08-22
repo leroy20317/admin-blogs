@@ -12,17 +12,31 @@ import styles from './index.less';
 import { QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { EditableProTable } from '@ant-design/pro-components';
-import { createRule, delRule, fetch, updateRule } from '@/services/clash';
+import {
+  createProxy,
+  createRule,
+  delProxy,
+  delRule,
+  fetch,
+  updateProxy,
+  updateRule,
+} from '@/services/clash';
 
 type Rule = API.Clash['rules'][number];
+type Proxy = API.Clash['proxies'][number];
 
 const Clash: FC = () => {
   const [types, setTypes] = useState<API.Clash['types']>([]);
   const [modes, setModes] = useState<API.Clash['modes']>([]);
 
-  const actionRef = useRef<ActionType>();
+  const ruleActionRef = useRef<ActionType>();
+  const proxyActionRef = useRef<ActionType>();
   const [total, setTotal] = useState(0);
-  const [editableKeys, setEditableRowKeys] = useState<Key[]>([]);
+  const [proxyTotal, setProxyTotal] = useState(0);
+  const [editableKeys, setEditableRowKeys] = useState<{ rules: Key[]; proxies: Key[] }>({
+    rules: [],
+    proxies: [],
+  });
 
   const getTypeList = useCallback(() => {
     fetch({ mode: 'types' }).then((res) => {
@@ -177,7 +191,7 @@ const Clash: FC = () => {
           onConfirm={async () => {
             await delRule({ id: record._id });
             setTotal(total - 1);
-            actionRef.current?.reloadAndRest?.();
+            ruleActionRef.current?.reloadAndRest?.();
           }}
         >
           <a>删除</a>
@@ -194,11 +208,11 @@ const Clash: FC = () => {
       <EditableProTable<Rule>
         ghost
         rowKey="_id"
-        actionRef={actionRef}
+        actionRef={ruleActionRef}
         recordCreatorProps={{
           position: 'top',
           record: () => ({
-            _id: 'create',
+            _id: `create-${Math.random()}`,
             mode: '1',
             site: '',
             type: '1',
@@ -234,22 +248,119 @@ const Clash: FC = () => {
         }}
         editable={{
           type: 'multiple',
-          editableKeys,
+          editableKeys: editableKeys.rules,
           onSave: async (rowKey, { _id, index, ...data }, originRow) => {
-            console.log(rowKey, _id, index, data, originRow);
-            if (_id === 'create') {
+            if (/create/.test(_id)) {
               await createRule(data);
               setTotal(total + 1);
             } else {
               await updateRule({ id: _id, data });
             }
-            actionRef.current?.reloadAndRest?.();
+            ruleActionRef.current?.reloadAndRest?.();
           },
-          onChange: setEditableRowKeys,
+          onChange: (keys) => {
+            setEditableRowKeys({ ...editableKeys, rules: keys });
+          },
         }}
         pagination={{
           size: 'default',
           hideOnSinglePage: true,
+          position: ['bottomRight'],
+        }}
+      />
+
+      <EditableProTable<Proxy>
+        ghost
+        bordered
+        rowKey="_id"
+        headerTitle={<h2 className={styles.header}>clash订阅代理({proxyTotal})</h2>}
+        actionRef={proxyActionRef}
+        recordCreatorProps={{
+          position: 'top',
+          record: () => ({
+            _id: `create-${Math.random()}`,
+            content: '{}',
+          }),
+        }}
+        columns={[
+          {
+            title: 'Sort',
+            width: 80,
+            readonly: true,
+            align: 'center',
+            dataIndex: 'index',
+            valueType: 'index',
+          },
+          {
+            title: 'Content',
+            dataIndex: 'content',
+            key: 'content',
+            valueType: 'jsonCode',
+            fieldProps: () => ({ autoSize: true }),
+            formItemProps: () => {
+              return {
+                noStyle: true,
+                rules: [{ required: true, message: '此项为必填项' }],
+              };
+            },
+          },
+          {
+            title: 'Actions',
+            valueType: 'option',
+            width: 150,
+            align: 'center',
+            render: (text, record, _, action) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  action?.startEditable?.(record._id);
+                }}
+              >
+                编辑
+              </a>,
+              <Popconfirm
+                key="delete"
+                title="确认删除此行吗？"
+                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                onConfirm={async () => {
+                  await delProxy({ id: record._id });
+                  proxyActionRef.current?.reloadAndRest?.();
+                }}
+              >
+                <a>删除</a>
+              </Popconfirm>,
+            ],
+          },
+        ]}
+        request={async ({ pageSize, current }) => {
+          const { body: res }: { body: API.ResponseList<API.Clash['proxies']> } = await fetch({
+            mode: 'proxies',
+            params: { page: current || 1, size: pageSize || 10 },
+          });
+          setProxyTotal(res.total);
+          return {
+            data: res.data.map((ele) => ({ ...ele, content: JSON.stringify(ele.content) })),
+            total: res.total,
+            success: true,
+          };
+        }}
+        editable={{
+          type: 'multiple',
+          editableKeys: editableKeys.proxies,
+          onSave: async (rowKey, { _id, index, content }, originRow) => {
+            if (/create/.test(_id)) {
+              await createProxy({ content: JSON.parse(content as any) });
+            } else {
+              await updateProxy({ id: _id, data: { content: JSON.parse(content as any) } });
+            }
+            proxyActionRef.current?.reloadAndRest?.();
+          },
+          onChange: (keys) => {
+            setEditableRowKeys({ ...editableKeys, proxies: keys });
+          },
+        }}
+        pagination={{
+          size: 'default',
           position: ['bottomRight'],
         }}
       />

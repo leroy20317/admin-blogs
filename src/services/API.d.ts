@@ -145,6 +145,7 @@ declare namespace API {
     }[];
     modes: { _id: string; id: string; name: string }[];
     types: { _id: string; id: string; name: string; write: boolean }[];
+    proxies: { _id: string; content: string }[];
   };
 
   export type Myself = {
