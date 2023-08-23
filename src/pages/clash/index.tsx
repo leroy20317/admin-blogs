@@ -158,7 +158,6 @@ const Clash: FC = () => {
           text: 'no-resolve',
         },
       },
-      renderText: (resolve) => (resolve === '1' ? 'resolve' : 'no-resolve'),
 
       formItemProps: () => {
         return {
@@ -254,6 +253,7 @@ const Clash: FC = () => {
               await createRule(data);
               setTotal(total + 1);
             } else {
+              console.log('updateRule', data);
               await updateRule({ id: _id, data });
             }
             ruleActionRef.current?.reloadAndRest?.();
