@@ -15,6 +15,6 @@ const Url = {
   comment: `/comment`, // 评论
   upload: `/file/upload`, // 上传
   delete_file: `/file/delete`, // 删除文件
-  clash: `/clash`, // clash
+  subscribe: `/subscribe`, // subscribe
 };
 export default Url;

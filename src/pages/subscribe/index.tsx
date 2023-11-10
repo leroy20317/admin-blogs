@@ -20,14 +20,14 @@ import {
   fetch,
   updateProxy,
   updateRule,
-} from '@/services/clash';
+} from '@/services/subscribe';
 
-type Rule = API.Clash['rules'][number];
-type Proxy = API.Clash['proxies'][number];
+type Rule = API.Subscribe['rules'][number];
+type Proxy = API.Subscribe['proxies'][number];
 
-const Clash: FC = () => {
-  const [types, setTypes] = useState<API.Clash['types']>([]);
-  const [modes, setModes] = useState<API.Clash['modes']>([]);
+const Subscribe: FC = () => {
+  const [types, setTypes] = useState<API.Subscribe['types']>([]);
+  const [modes, setModes] = useState<API.Subscribe['modes']>([]);
 
   const ruleActionRef = useRef<ActionType>();
   const proxyActionRef = useRef<ActionType>();
@@ -83,6 +83,8 @@ const Clash: FC = () => {
     {
       title: 'Site',
       dataIndex: 'site',
+      valueType: 'textarea',
+      fieldProps: { style: { width: '100%' }, autoSize: true },
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
         <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
           <Input
@@ -119,6 +121,7 @@ const Clash: FC = () => {
       },
       formItemProps: () => {
         return {
+          className: styles.textareaFormItem,
           rules: [{ required: true, message: '此项为必填项' }],
         };
       },
@@ -202,7 +205,7 @@ const Clash: FC = () => {
   return (
     <PageContainer
       className={styles.clash}
-      pageHeaderRender={() => <h2 className={styles.header}>clash订阅列表 ({total})</h2>}
+      pageHeaderRender={() => <h2 className={styles.header}>订阅列表 ({total})</h2>}
     >
       <EditableProTable<Rule>
         ghost
@@ -230,7 +233,7 @@ const Clash: FC = () => {
             { page: current || 1, size: pageSize || 10 },
           );
 
-          const { body: res }: { body: API.ResponseList<API.Clash['rules']> } = await fetch({
+          const { body: res }: { body: API.ResponseList<API.Subscribe['rules']> } = await fetch({
             mode: 'rules',
             params,
           });
@@ -273,7 +276,7 @@ const Clash: FC = () => {
         ghost
         bordered
         rowKey="_id"
-        headerTitle={<h2 className={styles.header}>clash订阅代理({proxyTotal})</h2>}
+        headerTitle={<h2 className={styles.header}>订阅代理({proxyTotal})</h2>}
         actionRef={proxyActionRef}
         recordCreatorProps={{
           position: 'top',
@@ -333,7 +336,7 @@ const Clash: FC = () => {
           },
         ]}
         request={async ({ pageSize, current }) => {
-          const { body: res }: { body: API.ResponseList<API.Clash['proxies']> } = await fetch({
+          const { body: res }: { body: API.ResponseList<API.Subscribe['proxies']> } = await fetch({
             mode: 'proxies',
             params: { page: current || 1, size: pageSize || 10 },
           });
@@ -368,4 +371,4 @@ const Clash: FC = () => {
   );
 };
 
-export default Clash;
+export default Subscribe;

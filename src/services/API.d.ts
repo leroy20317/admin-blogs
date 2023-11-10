@@ -134,7 +134,7 @@ declare namespace API {
     page: number;
   };
 
-  export type Clash = {
+  export type Subscribe = {
     rules: {
       _id: string;
       mode: string;

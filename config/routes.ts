@@ -65,10 +65,10 @@
     component: './setting/index',
   },
   {
-    path: '/clash',
-    name: 'clash',
+    path: '/subscribe',
+    name: 'subscribe',
     icon: 'icon-star',
-    component: './clash/index',
+    component: './subscribe/index',
   },
 
   {
