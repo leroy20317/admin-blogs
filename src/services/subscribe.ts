@@ -1,4 +1,4 @@
-import { request } from 'umi';
+import { request } from '@umijs/max';
 import url from '@/utils/url';
 
 interface Params extends Record<string, any> {

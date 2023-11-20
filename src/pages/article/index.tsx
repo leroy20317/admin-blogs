@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import { Col, List, message, Popconfirm, Row, Space, Tooltip } from 'antd';
 import styles from './index.less';
-import { history, useModel } from 'umi';
+import { history, useModel } from '@umijs/max';
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import url from '@/utils/url';
 import { del } from '@/services/article';
-import moment from 'moment';
-// import 'moment/locale/es-us';
+import dayjs from 'dayjs';
+import 'dayjs/locale/en';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+// import 'dayjs/locale/es-us';
 // import locale from 'antd/es/date-picker/locale/zh_CN';
 
 const Article: React.FC = () => {
@@ -44,6 +46,26 @@ const Article: React.FC = () => {
       }
     });
   };
+
+  const iconClassName = useEmotionCss(({ token }) => {
+    return {
+      color: '#cfcfcf',
+      cursor: 'pointer',
+      '&:hover': {
+        color: token.colorPrimaryActive,
+      },
+    };
+  });
+
+  const deleteIconClassName = useEmotionCss(({ token }) => {
+    return {
+      color: '#cfcfcf',
+      cursor: 'pointer',
+      '&:hover': {
+        color: token.colorError,
+      },
+    };
+  });
 
   return (
     <PageContainer
@@ -82,15 +104,15 @@ const Article: React.FC = () => {
             <Row>
               <Col span={12}>{item?.title}</Col>
               <Col span={4} offset={2}>
-                {moment(item.time).locale('en').format('mm:ss MMM DD')}
+                {dayjs(item.time).locale('en').format('mm:ss MMM DD')}
               </Col>
               <Col span={4} offset={2}>
                 <Space align="start" size="middle">
                   <Tooltip title="View Article">
-                    <EyeOutlined className={styles.icon} onClick={() => view(item._id)} />
+                    <EyeOutlined className={iconClassName} onClick={() => view(item._id)} />
                   </Tooltip>
                   <Tooltip title="Edit Article">
-                    <EditOutlined className={styles.icon} onClick={() => edit(item._id)} />
+                    <EditOutlined className={iconClassName} onClick={() => edit(item._id)} />
                   </Tooltip>
                   <Popconfirm
                     title="是否删除该文章?"
@@ -98,7 +120,7 @@ const Article: React.FC = () => {
                     okText="确定"
                     cancelText="取消"
                   >
-                    <DeleteOutlined className={`${styles.icon} ${styles.delete}`} />
+                    <DeleteOutlined className={deleteIconClassName} />
                   </Popconfirm>
                 </Space>
               </Col>

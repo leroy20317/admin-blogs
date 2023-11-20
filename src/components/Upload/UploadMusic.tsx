@@ -1,7 +1,7 @@
 import { message, Upload } from 'antd';
 import { CustomerServiceOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import url from '@/utils/url';
 
 interface Props {

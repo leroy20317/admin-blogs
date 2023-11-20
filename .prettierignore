@@ -1,5 +1,4 @@
 **/*.svg
-package.json
 .umi
 .umi-production
 /dist
@@ -21,4 +20,3 @@ yarn-error.log
 CNAME
 /build
 /public
-/node_modules

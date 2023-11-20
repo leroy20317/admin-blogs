@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Image, message, Upload } from 'antd';
 import { LoadingOutlined, PictureOutlined } from '@ant-design/icons';
-import { useModel } from '@@/plugin-model/useModel';
+import { useModel } from '@umijs/max';
 import ImgCrop from '../ImgCrop';
 import { upload } from '@/services/common';
 

@@ -1,10 +1,12 @@
 import { FC, useState } from 'react';
 import { Image, message, Upload } from 'antd';
 import { LoadingOutlined, PictureOutlined, PlusOutlined } from '@ant-design/icons';
-import { useModel } from '@@/plugin-model/useModel';
+import { useModel } from '@umijs/max';
 import ImgCrop from '../../components/ImgCrop';
 import styles from './index.less';
 import { upload } from '@/services/common';
+import classNames from 'classnames';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
 
 interface ImgProps {
   status: string;
@@ -69,6 +71,20 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
 
+  const hoverPrimaryColor = useEmotionCss(({ token }) => {
+    return {
+      '&:hover': {
+        color: token.colorPrimary,
+      },
+    };
+  });
+  const avatarPadding0 = useEmotionCss(() => {
+    return {
+      ':global(.ant-upload)': {
+        padding: 0,
+      },
+    };
+  });
   return (
     <ImgCrop
       grid
@@ -108,7 +124,11 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
           };
         }}
         fileList={fileList}
-        className={isAvatar ? styles.avatar : styles.bg}
+        className={
+          isAvatar
+            ? classNames(styles.avatar, avatarPadding0)
+            : classNames(styles.bg, hoverPrimaryColor)
+        }
         headers={{
           Authorization: `Bearer ${localStorage.getItem('Authorization')}`,
         }}

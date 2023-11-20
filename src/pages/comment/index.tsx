@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import {
   Badge,
   Button,
@@ -21,7 +21,7 @@ import {
   Typography,
 } from 'antd';
 import styles from './index.less';
-import { useModel } from 'umi';
+import { useModel } from '@umijs/max';
 import {
   CloseCircleOutlined,
   DeleteOutlined,
@@ -31,11 +31,13 @@ import {
   SyncOutlined,
 } from '@ant-design/icons';
 import { del, read, replay } from '@/services/comment';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import url from '@/utils/url';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import classNames from 'classnames';
 // import locale from 'antd/es/date-picker/locale/zh_CN';
 
-const ReplayModal: React.ForwardRefExoticComponent<any> = forwardRef<any, { reload: Function }>(
+const ReplayModal: React.ForwardRefExoticComponent<any> = forwardRef<any, { reload: () => void }>(
   ({ reload }, ref) => {
     const { initialState } = useModel('@@initialState');
     const { currentUser } = initialState || {};
@@ -168,6 +170,34 @@ const Comment: React.FC = () => {
     });
   };
 
+  const iconClassName = useEmotionCss(({ token }) => {
+    return {
+      color: '#cfcfcf',
+      cursor: 'pointer',
+      '&:hover': {
+        color: token.colorPrimaryActive,
+      },
+    };
+  });
+
+  const deleteIconClassName = useEmotionCss(({ token }) => {
+    return {
+      color: '#cfcfcf',
+      cursor: 'pointer',
+      '&:hover': {
+        color: token.colorError,
+      },
+    };
+  });
+
+  const hoverErrorColor = useEmotionCss(({ token }) => {
+    return {
+      '&:hover': {
+        color: token.colorError,
+      },
+    };
+  });
+
   return (
     <PageContainer
       loading={loading}
@@ -176,7 +206,7 @@ const Comment: React.FC = () => {
         <h2 className={styles.header}>
           评论列表 ({data?.total})
           {unread && (
-            <span className={styles.read} onClick={onRead}>
+            <span className={classNames(styles.read, hoverErrorColor)} onClick={onRead}>
               <SyncOutlined style={{ fontSize: 14, marginRight: 5 }} />
               一键已读
             </span>
@@ -230,15 +260,18 @@ const Comment: React.FC = () => {
                 <Typography.Text ellipsis={true}>{item.content}</Typography.Text>
               </Col>
               <Col span={3} offset={1}>
-                {moment(item.time).locale('en').format('HH:mm MMM DD')}
+                {dayjs(item.time).locale('en').format('HH:mm MMM DD')}
               </Col>
               <Col span={3} offset={1}>
                 <Space align="start" size="middle">
                   <Tooltip title="View Article">
-                    <EyeOutlined className={styles.icon} onClick={() => view(item.article_id)} />
+                    <EyeOutlined className={iconClassName} onClick={() => view(item.article_id)} />
                   </Tooltip>
                   <Tooltip title="Replay Comment">
-                    <MessageOutlined className={styles.icon} onClick={() => replayComment(item)} />
+                    <MessageOutlined
+                      className={iconClassName}
+                      onClick={() => replayComment(item)}
+                    />
                   </Tooltip>
                   <Popconfirm
                     title={
@@ -248,7 +281,7 @@ const Comment: React.FC = () => {
                     okText="确定"
                     cancelText="取消"
                   >
-                    <DeleteOutlined className={`${styles.icon} ${styles.delete}`} />
+                    <DeleteOutlined className={deleteIconClassName} />
                   </Popconfirm>
                 </Space>
               </Col>

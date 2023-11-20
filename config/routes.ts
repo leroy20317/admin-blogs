@@ -9,7 +9,7 @@
           {
             name: 'login',
             path: '/user/login',
-            component: './user/Login',
+            component: './user/login',
           },
         ],
       },
@@ -64,18 +64,7 @@
     icon: 'icon-moon-night',
     component: './setting/index',
   },
-  {
-    path: '/subscribe',
-    name: 'subscribe',
-    icon: 'icon-star',
-    component: './subscribe/index',
-  },
 
-  {
-    path: '/',
-    redirect: '/home',
-  },
-  {
-    component: './404',
-  },
+  { path: '/', redirect: '/home' },
+  { path: '*', layout: false, component: './404' },
 ];

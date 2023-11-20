@@ -8,7 +8,6 @@ _roadhog-api-doc
 
 # production
 /dist
-/.vscode
 
 # misc
 .DS_Store
@@ -18,8 +17,10 @@ yarn-error.log
 /coverage
 .idea
 yarn.lock
+package-lock.json
 *bak
-
+.vscode
+.env
 
 # visual studio code
 .history
@@ -27,12 +28,10 @@ yarn.lock
 functions/*
 .temp/**
 
-.env
-.mfsu
-
 # umi
 .umi
 .umi-production
+.umi-test
 
 # screenshot
 screenshot

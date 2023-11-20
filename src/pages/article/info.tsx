@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import { Button, Col, DatePicker, Form, Input, message, Radio, Row, Switch } from 'antd';
 import styles from './info.less';
-import { history } from 'umi';
+import { history, useSearchParams } from '@umijs/max';
 import { create, fetch, update } from '@/services/article';
 import Editor from '@/components/Editor';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import UploadImage from '@/components/Upload/UploadImage';
 import UploadMusic from '@/components/Upload/UploadMusic';
 
 const ArticleInfo: React.FC = () => {
-  const { id } = history.location.query || {};
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id');
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -37,7 +38,7 @@ const ArticleInfo: React.FC = () => {
       getDetail().then((res: any) => {
         form.setFieldsValue({
           ...res,
-          time: res?.time && moment(res.time),
+          time: res?.time && dayjs(res.time),
           image: res?.image.url
             ? {
                 url: res?.image.url || '',

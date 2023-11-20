@@ -5,7 +5,7 @@ export default function useArticleModel() {
   const [data, setData] = useState<API.ArticleList>({ total: 0, data: [], page: 1 });
   const [loading, setLoading] = useState(true);
 
-  const getList = useCallback((params) => {
+  const getList = useCallback((params: any) => {
     setLoading(true);
     fetch(params)
       .then((res) => {

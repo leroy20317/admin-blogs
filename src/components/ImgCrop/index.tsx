@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef, forwardRef, memo } from 'react';
 import Cropper from 'react-easy-crop';
-import { Slider as AntSlider, Modal as AntModal } from 'antd';
+import { Slider as AntSlider, Modal as AntModal, Button } from 'antd';
 import './index.less';
 import type { ReactNode } from 'react';
 import type { UploadProps } from 'antd';
@@ -41,14 +41,14 @@ const EasyCrop = forwardRef<Cropper, EasyCropProps>((props, ref) => {
   const [cropSize, setCropSize] = useState({ width: 0, height: 0 });
 
   const onCropComplete = useCallback(
-    (croppedArea, croppedAreaPixels) => {
+    (croppedArea: any, croppedAreaPixels: any) => {
       cropPixelsRef.current = croppedAreaPixels;
     },
     [cropPixelsRef],
   );
 
   const onMediaLoaded = useCallback(
-    (mediaSize) => {
+    (mediaSize: any) => {
       const { width, height } = mediaSize;
       const ratioWidth = height * aspect;
 
@@ -95,12 +95,12 @@ const EasyCrop = forwardRef<Cropper, EasyCropProps>((props, ref) => {
       />
       {zoom && (
         <section className={`${cls}-control ${cls}-control-zoom`}>
-          <button
+          <Button
             onClick={() => setZoomVal(zoomVal - ZOOM_STEP)}
             disabled={zoomVal - ZOOM_STEP < minZoom}
           >
             －
-          </button>
+          </Button>
           <AntSlider
             min={minZoom}
             max={maxZoom}
@@ -108,22 +108,22 @@ const EasyCrop = forwardRef<Cropper, EasyCropProps>((props, ref) => {
             value={zoomVal}
             onChange={setZoomVal}
           />
-          <button
+          <Button
             onClick={() => setZoomVal(zoomVal + ZOOM_STEP)}
             disabled={zoomVal + ZOOM_STEP > maxZoom}
           >
             ＋
-          </button>
+          </Button>
         </section>
       )}
       {rotate && (
         <section className={`${cls}-control ${cls}-control-rotate`}>
-          <button
+          <Button
             onClick={() => setRotateVal(rotateVal - ROTATE_STEP)}
             disabled={rotateVal === MIN_ROTATE}
           >
             ↺
-          </button>
+          </Button>
           <AntSlider
             min={MIN_ROTATE}
             max={MAX_ROTATE}
@@ -131,12 +131,12 @@ const EasyCrop = forwardRef<Cropper, EasyCropProps>((props, ref) => {
             value={rotateVal}
             onChange={setRotateVal}
           />
-          <button
+          <Button
             onClick={() => setRotateVal(rotateVal + ROTATE_STEP)}
             disabled={rotateVal === MAX_ROTATE}
           >
             ↻
-          </button>
+          </Button>
         </section>
       )}
     </>
@@ -197,6 +197,7 @@ const ImgCrop = forwardRef<Cropper, ImgCropProps & { children?: ReactNode }>((pr
         ...restUploadProps,
         accept: accept || 'image/*',
         beforeUpload: (file: RcFile, fileList: RcFile[]) => {
+          // eslint-disable-next-line no-async-promise-executor
           return new Promise(async (resolve, reject) => {
             if (cb.current.beforeCrop && !(await cb.current.beforeCrop(file, fileList))) {
               reject();

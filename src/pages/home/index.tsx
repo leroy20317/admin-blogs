@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import { Card, Col, message, Row, Statistic } from 'antd';
 import styles from './index.less';
 import { dateDiff } from '@/utils/utils';
-import { history, useModel } from 'umi';
+import { history, useModel } from '@umijs/max';
 import IconFont from '@/components/IconFont';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import classNames from 'classnames';
 
 const Home: React.FC = () => {
   const { initialState } = useModel('@@initialState');
@@ -16,12 +18,18 @@ const Home: React.FC = () => {
   useEffect(() => {
     if (!currentUser?.name) {
       // 未填写相关信息
-      message.warn('请填写页面相关信息！');
+      message.warning('请填写页面相关信息！');
       history.push('/setting');
       return;
     }
     getInfo();
   }, []);
+
+  const primaryColor = useEmotionCss(({ token }) => {
+    return {
+      color: token.colorPrimary,
+    };
+  });
 
   return (
     <>
@@ -38,8 +46,8 @@ const Home: React.FC = () => {
         className={styles.home}
         pageHeaderRender={() => (
           <>
-            <h2 className={styles.header}>
-              <IconFont className={styles.icon} type="icon-magic-stick" />
+            <h2 className={classNames(styles.header, primaryColor)}>
+              <IconFont className={classNames(styles.icon, primaryColor)} type="icon-magic-stick" />
               愿所有的美好如约而至，愿所有的黑暗都能看到希望。
             </h2>
           </>

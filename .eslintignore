@@ -4,8 +4,5 @@
 .history
 public
 dist
-/**/.umi
-/.mfsu
+.umi
 mock
-kodo.js
-/node_modules

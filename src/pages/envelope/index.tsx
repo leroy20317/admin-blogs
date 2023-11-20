@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import { Col, List, message, Popconfirm, Row, Space, Tooltip, Typography } from 'antd';
 import styles from './index.less';
-import { history, useModel } from 'umi';
+import { history, useModel } from '@umijs/max';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { del } from '@/services/envelope';
-import moment from 'moment';
-// import locale from 'antd/es/date-picker/locale/zh_CN';
+import dayjs from 'dayjs';
+import 'dayjs/locale/en';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
 
 const Envelope: React.FC = () => {
   const { data, getList, loading } = useModel('envelope', (model) => ({
@@ -38,6 +39,26 @@ const Envelope: React.FC = () => {
       }
     });
   };
+
+  const iconClassName = useEmotionCss(({ token }) => {
+    return {
+      color: '#cfcfcf',
+      cursor: 'pointer',
+      '&:hover': {
+        color: token.colorPrimaryActive,
+      },
+    };
+  });
+
+  const deleteIconClassName = useEmotionCss(({ token }) => {
+    return {
+      color: '#cfcfcf',
+      cursor: 'pointer',
+      '&:hover': {
+        color: token.colorError,
+      },
+    };
+  });
 
   return (
     <PageContainer
@@ -80,12 +101,12 @@ const Envelope: React.FC = () => {
                 </Typography.Text>
               </Col>
               <Col span={3} offset={1}>
-                {moment(item.time).locale('en').format('MMM DD, YYYY')}
+                {dayjs(item.time).locale('en').format('MMM DD, YYYY')}
               </Col>
               <Col span={3} offset={1}>
                 <Space align="start" size="middle">
                   <Tooltip title="Edit Envelope">
-                    <EditOutlined className={styles.icon} onClick={() => edit(item._id)} />
+                    <EditOutlined className={iconClassName} onClick={() => edit(item._id)} />
                   </Tooltip>
                   <Popconfirm
                     title="是否删除该短语?"
@@ -93,7 +114,7 @@ const Envelope: React.FC = () => {
                     okText="确定"
                     cancelText="取消"
                   >
-                    <DeleteOutlined className={`${styles.icon} ${styles.delete}`} />
+                    <DeleteOutlined className={deleteIconClassName} />
                   </Popconfirm>
                 </Space>
               </Col>

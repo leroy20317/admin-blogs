@@ -1,9 +1,8 @@
-@import '~antd/es/style/themes/default.less';
-
 :global {
-  .ant-layout .ant-layout-sider {
+  .ant-pro .ant-layout .ant-layout-sider {
     color: #fff;
-    background: @primary-color;
+    background: #1890ff;
+    border-radius: 20px 0 0 20px;
 
     .ant-pro-sider-menu {
       .anticon {
@@ -33,11 +32,11 @@
 
           &-selected,
           &-active {
-            color: @primary-color;
+            color: #1890ff;
             background: #fff;
 
             a {
-              color: @primary-color;
+              color: #1890ff;
             }
           }
         }
@@ -53,11 +52,11 @@
 
           &-selected,
           &-active {
-            color: @primary-color;
+            color: #1890ff;
             background-color: #e6f7ff;
 
             a {
-              color: @primary-color;
+              color: #1890ff;
             }
           }
         }
@@ -78,7 +77,7 @@
 
 .info {
   width: 100%;
-  margin-top: 30px;
+  margin-top: 60px;
   text-align: center;
 
   .photo {
@@ -87,7 +86,7 @@
     margin: auto;
     overflow: hidden;
     background: #fff;
-    border: 3px solid @primary-color;
+    border: 3px solid #1890ff;
     border-radius: 50%;
     transition: all 0.3s;
 
@@ -103,9 +102,9 @@
   }
 }
 
-:global(.ant-layout-sider-collapsed) {
+:global(.ant-layout .ant-layout-sider-collapsed .ant-pro-sider-logo) {
+  padding: 0;
   .info {
-    margin-top: 10px;
     .photo {
       width: 40px;
       height: 40px;

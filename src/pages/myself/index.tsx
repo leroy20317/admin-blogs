@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import { Button, Form, Input, message } from 'antd';
 import styles from './index.less';
 import { fetchMyself, postMyself } from '@/services/common';
 import Editor from '@/components/Editor';
-import { history } from 'umi';
+import { history } from '@umijs/max';
 
 const Myself: React.FC = () => {
   const [form] = Form.useForm();

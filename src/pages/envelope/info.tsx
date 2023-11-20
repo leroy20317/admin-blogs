@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-components';
 import { Button, DatePicker, Form, message } from 'antd';
 import styles from './info.less';
-import { history } from 'umi';
+import { history, useSearchParams } from '@umijs/max';
 import { create, fetch, update } from '@/services/envelope';
 import Editor from '@/components/Editor';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const EnvelopeInfo: React.FC = () => {
-  const { id } = history.location.query || {};
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id');
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,7 +36,7 @@ const EnvelopeInfo: React.FC = () => {
       getDetail().then((res: any) => {
         form.setFieldsValue({
           content: res?.content,
-          time: res?.time && moment(res.time),
+          time: res?.time && dayjs(res.time),
         });
       });
     }

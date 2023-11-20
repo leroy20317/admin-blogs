@@ -5,7 +5,7 @@ export default function useEnvelopeModel() {
   const [data, setData] = useState<API.CommentList>({ total: 0, data: [], page: 1 });
   const [loading, setLoading] = useState(true);
 
-  const getList = useCallback((params) => {
+  const getList = useCallback((params: any) => {
     setLoading(true);
     fetch(params)
       .then((res) => {

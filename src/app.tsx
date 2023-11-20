@@ -1,19 +1,12 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { PageLoading } from '@ant-design/pro-layout';
-import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
-import { history } from 'umi';
-import type { ResponseError } from 'umi-request';
+import type { Settings as LayoutSettings } from '@ant-design/pro-components';
+import type { RunTimeLayoutConfig } from '@umijs/max';
+import { history } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
-import { queryCurrent as queryCurrentUser } from './services/user';
-import MenuHeader from './components/Sidebar/MenuHeader';
-import { notification } from 'antd';
-
+import { errorConfig } from './requestErrorConfig';
+import { queryCurrent as queryCurrentUser } from '@/services/user';
+import React from 'react';
+import MenuHeader from '@/components/Sidebar/MenuHeader';
 const loginPath = '/user/login';
-
-/** 获取用户信息比较慢的时候会展示一个 loading */
-export const initialStateConfig = {
-  loading: <PageLoading />,
-};
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -33,18 +26,19 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
-  // 如果是登录页面，不执行
-  if (history.location.pathname !== loginPath) {
+  // 如果不是登录页面，执行
+  const { location } = history;
+  if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
       currentUser,
-      settings: defaultSettings,
+      settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
   return {
     fetchUserInfo,
-    settings: defaultSettings,
+    settings: defaultSettings as Partial<LayoutSettings>,
   };
 }
 
@@ -53,7 +47,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     collapsedWidth: 100,
     siderWidth: 200,
-    rightContentRender: () => null,
+    actionsRender: () => [],
     disableContentMargin: false,
     footerRender: () => null,
     menuHeaderRender: () => <MenuHeader currentUser={initialState?.currentUser} />,
@@ -68,81 +62,18 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      if (initialState?.loading) return <PageLoading />;
-      return children;
+      // if (initialState?.loading) return <PageLoading />;
+      return <>{children}</>;
     },
     ...initialState?.settings,
   };
 };
 
-const key = 'error';
-
-const codeMessage = {
-  200: '服务器成功返回请求的数据。',
-  201: '新建或修改数据成功。',
-  202: '一个请求已经进入后台排队（异步任务）。',
-  204: '删除数据成功。',
-  400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
-  401: '用户没有权限（令牌、用户名、密码错误）。',
-  403: '用户得到授权，但是访问是被禁止的。',
-  404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
-  405: '请求方法不被允许。',
-  406: '请求的格式不可得。',
-  410: '请求的资源被永久删除，且不会再得到的。',
-  422: '当创建一个对象时，发生一个验证错误。',
-  500: '服务器发生错误，请检查服务器。',
-  502: '网关错误。',
-  503: '服务不可用，服务器暂时过载或维护。',
-  504: '网关超时。',
-};
-
 /**
- * 异常处理程序
+ * @name request 配置，可以配置错误处理
+ * 它基于 axios 和 ahooks 的 useRequest 提供了一套统一的网络请求和错误处理方案。
+ * @doc https://umijs.org/docs/max/request#配置
  */
-const errorHandler = (error: ResponseError) => {
-  const { response } = error;
-  if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
-
-    if (status === 401 || status === 403) {
-      notification.error({
-        key,
-        message: '未登录或登录已过期，请重新登录。',
-      });
-      // @HACK
-      window.location.href = '/user/login';
-      return;
-    }
-
-    notification.error({
-      message: `请求错误 ${status}: ${url}`,
-      description: errorText,
-    });
-  }
-  if (!response) {
-    notification.error({
-      key,
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
-    });
-  }
-  throw error;
-};
-
-export const request: RequestConfig = {
-  // prefix: 'http://local.leroytop.com:5001/admin',
-  prefix: '//api.leroytop.com/admin',
-  errorHandler,
-  requestInterceptors: [
-    (url, options) => {
-      const { headers } = options;
-      return {
-        options: {
-          ...options,
-          headers: { ...headers, Authorization: `Bearer ${localStorage.getItem('Authorization')}` },
-        },
-      };
-    },
-  ],
+export const request = {
+  ...errorConfig,
 };

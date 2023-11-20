@@ -1,13 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import { Button, DatePicker, Form, Input, message, Radio, Row, Col, Tooltip } from 'antd';
+import { PageContainer } from '@ant-design/pro-components';
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Radio,
+  Row,
+  Col,
+  Tooltip,
+  ColorPicker,
+} from 'antd';
 import styles from './index.less';
 import { postInfo, fetchInfo } from '@/services/common';
-import { history, useModel } from 'umi';
+import { history, useModel } from '@umijs/max';
 import UploadImage from './UploadImage';
-import ColorPicker from '@/components/ColorPicker';
 import { EyeOutlined } from '@ant-design/icons';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import classNames from 'classnames';
 
 const Setting: React.FC = () => {
   const { initialState, refresh } = useModel('@@initialState');
@@ -29,7 +41,7 @@ const Setting: React.FC = () => {
               bg_music,
               cover: {
                 ...cover,
-                date: moment(cover?.date),
+                date: dayjs(cover?.date),
                 image: {
                   url: cover?.image,
                 },
@@ -55,7 +67,7 @@ const Setting: React.FC = () => {
     }
 
     return () => {
-      form.resetFields();
+      form?.resetFields();
     };
   }, []);
 
@@ -81,9 +93,7 @@ const Setting: React.FC = () => {
       if (response.status === 'success') {
         message.success(response.message, 1);
         setTimeout(() => {
-          if (refresh) {
-            refresh();
-          }
+          refresh?.();
           history.push('/home');
         }, 800);
       } else {
@@ -100,6 +110,14 @@ const Setting: React.FC = () => {
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
+
+  const hoverPrimaryColor = useEmotionCss(({ token }) => {
+    return {
+      '&:hover': {
+        color: token.colorPrimary,
+      },
+    };
+  });
 
   return (
     <PageContainer
@@ -209,7 +227,7 @@ const Setting: React.FC = () => {
                         </div>
                       }
                     >
-                      <EyeOutlined className={styles.eye} />
+                      <EyeOutlined className={classNames(styles.eye, hoverPrimaryColor)} />
                     </Tooltip>
                   );
                 }}
@@ -229,17 +247,6 @@ const Setting: React.FC = () => {
         <Form.Item label="时间" name={['cover', 'date']} required>
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
-
-        {/*<h2 className={styles.header}>评论信息</h2>*/}
-        {/*<Form.Item label="评论邮箱" name={['comment', 'email']} required>*/}
-        {/*  <Input placeholder="管理员评论的邮箱" />*/}
-        {/*</Form.Item>*/}
-        {/*<Form.Item label="评论昵称" name={['comment', 'name']} required>*/}
-        {/*  <Input placeholder="管理员评论的昵称" />*/}
-        {/*</Form.Item>*/}
-        {/*<Form.Item label="评论标识" name={['comment', 'mark']} required>*/}
-        {/*  <Input placeholder="前台评论的管理员标识" />*/}
-        {/*</Form.Item>*/}
 
         <h2 className={styles.header}>背景音乐</h2>
         <Form.Item label="文章列表" name={['bg_music', 'mood']} required>
