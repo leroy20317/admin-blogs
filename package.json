@@ -6,7 +6,7 @@
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
     "build": "max build",
-    "publish": "umi build && node kodo.js",
+    "publish": "max build && node kodo.js",
     "deploy": "pnpm run build && pnpm run gh-pages",
     "dev": "cross-env HOST=local.leroytop.com PORT=5002 pnpm run start:dev",
     "gh-pages": "gh-pages -d dist",
