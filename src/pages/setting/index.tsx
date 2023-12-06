@@ -125,11 +125,6 @@ const Setting: React.FC = () => {
         requiredMark={false}
         labelCol={{ span: 3 }}
         wrapperCol={{ span: 19 }}
-        initialValues={{
-          admin: {
-            upload_type: '1',
-          },
-        }}
         validateMessages={{
           required: '${label}不能为空',
         }}

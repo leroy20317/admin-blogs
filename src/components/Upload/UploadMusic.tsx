@@ -1,7 +1,6 @@
 import { message, Upload } from 'antd';
 import { CustomerServiceOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import { useModel } from '@umijs/max';
 import url from '@/utils/url';
 
 interface Props {
@@ -21,15 +20,13 @@ const UploadMusic = ({ value, onChange }: Props) => {
     ];
   };
   const [fileList, setFileList] = useState<any[]>(getInitList());
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
 
   return (
     <Upload.Dragger
       accept="audio/*"
       name="file"
       multiple={false}
-      action={`${url.upload}/${currentUser?.upload_type || ''}`}
+      action={`${url.upload}/cdn`}
       fileList={fileList}
       beforeUpload={(file: any) => {
         let result = true;

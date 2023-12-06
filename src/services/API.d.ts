@@ -34,7 +34,6 @@ declare namespace API {
   export type CurrentUser = {
     name: string;
     avatar: string;
-    upload_type: number;
   };
 
   export type Info = {
@@ -55,7 +54,6 @@ declare namespace API {
     admin: {
       avatar: string;
       name: string;
-      upload_type: string;
     };
     web: {
       name: string;

@@ -11,7 +11,6 @@ import { useFullscreen } from 'ahooks';
 import ReactMarkdown from 'react-markdown';
 import * as monaco from 'monaco-editor';
 import { Divider, Space, Tooltip } from 'antd';
-import { useModel } from 'umi';
 import styles from './index.less';
 import { upload } from '@/services/common';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -24,8 +23,6 @@ interface Props {
 }
 
 const Editor: FC<Props> = ({ value, onChange, height = 800 }) => {
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
   const boxRef = useRef<HTMLDivElement>(null);
   const divEl = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -77,7 +74,7 @@ const Editor: FC<Props> = ({ value, onChange, height = 800 }) => {
     if (fileRef.current) fileRef.current.value = '';
     if (!file) return;
     const res = await upload({
-      type: currentUser?.upload_type,
+      type: 'cdn',
       file,
     });
     insertContent(`![${res.body.filename}](${res.body.url})`);
@@ -134,11 +131,12 @@ const Editor: FC<Props> = ({ value, onChange, height = 800 }) => {
         <div className={styles.right} style={{ overflow: 'auto', padding: 8 }}>
           <ReactMarkdown
             components={{
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               code({ node, inline, className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || '');
                 return !inline && match ? (
                   <SyntaxHighlighter
-                    style={theme}
+                    style={theme as any}
                     language={match[1]}
                     PreTag="div"
                     customStyle={{
