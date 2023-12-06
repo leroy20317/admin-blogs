@@ -142,7 +142,6 @@ const Setting: React.FC = () => {
           },
         }}
         validateMessages={{
-          // eslint-disable-next-line no-template-curly-in-string
           required: '${label}不能为空',
         }}
       >
@@ -163,8 +162,8 @@ const Setting: React.FC = () => {
 
         <Form.Item label="文件上传" name={['admin', 'upload_type']}>
           <Radio.Group>
-            <Radio value={1}>服务器</Radio>
-            <Radio value={2}>七牛KODO</Radio>
+            <Radio value="base">服务器</Radio>
+            <Radio value="cdn">CDN服务器</Radio>
           </Radio.Group>
         </Form.Item>
 
