@@ -14,6 +14,17 @@ const kodoClient = new S3({
   credentials: { accessKeyId: process.env.ACCESSKEY, secretAccessKey: process.env.SECRETKEY },
 });
 
+// 文件上传
+function uploadFile(key, localFile) {
+  return kodoClient.send(
+    new PutObjectCommand({
+      Bucket: 'leroy20317',
+      Key: key,
+      Body: fs.createReadStream(localFile),
+    }),
+  );
+}
+
 // 异步遍历目录下的所有文件
 rd.each(
   path.join(__dirname, '/dist'),
@@ -21,13 +32,7 @@ rd.each(
     if (s.isFile()) {
       co(function* () {
         try {
-          const result = yield kodoClient.send(
-            new PutObjectCommand({
-              Bucket: 'leroy20317',
-              Key: f.replace(path.join(__dirname, '/dist'), folderName),
-              Body: fs.createReadStream(f),
-            }),
-          );
+          const result = yield uploadFile(f.replace(path.join(__dirname, '/dist'), folderName), f);
           return result;
         } catch (error) {
           console.log(error);
