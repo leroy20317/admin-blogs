@@ -1,17 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-components';
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Radio,
-  Row,
-  Col,
-  Tooltip,
-  ColorPicker,
-} from 'antd';
+import { Button, DatePicker, Form, Input, message, Row, Col, Tooltip, ColorPicker } from 'antd';
 import styles from './index.less';
 import { postInfo, fetchInfo } from '@/services/common';
 import { history, useModel } from '@umijs/max';
@@ -158,13 +147,6 @@ const Setting: React.FC = () => {
         </Form.Item>
         <Form.Item label="管理昵称" name={['admin', 'name']} required>
           <Input placeholder="请填写" />
-        </Form.Item>
-
-        <Form.Item label="文件上传" name={['admin', 'upload_type']}>
-          <Radio.Group>
-            <Radio value="base">服务器</Radio>
-            <Radio value="cdn">CDN服务器</Radio>
-          </Radio.Group>
         </Form.Item>
 
         <h2 className={styles.header}>前台页面</h2>

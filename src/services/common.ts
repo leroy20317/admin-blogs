@@ -27,7 +27,7 @@ export async function postMyself(data: Record<string, any>) {
   });
 }
 
-export async function upload(data: { type?: number; file: Blob }) {
+export async function upload(data: { type?: 'base' | 'cdn'; file: Blob }) {
   const formData = new FormData();
   formData.append('file', data.file);
   return request<{

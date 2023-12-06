@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Image, message, Upload } from 'antd';
 import { LoadingOutlined, PictureOutlined } from '@ant-design/icons';
-import { useModel } from '@umijs/max';
 import ImgCrop from '../ImgCrop';
 import { upload } from '@/services/common';
 
@@ -50,8 +49,6 @@ const UploadImage = ({ value, onChange }: Props) => {
     return [{ status: 'done', response: { body: value }, filename: value.filename }];
   };
   const [fileList, setFileList] = useState<any[]>(getInitList());
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
 
   return (
     <ImgCrop
@@ -77,7 +74,7 @@ const UploadImage = ({ value, onChange }: Props) => {
         customRequest={async ({ file, onError, onSuccess }) => {
           try {
             const res = await upload({
-              type: currentUser?.upload_type,
+              type: 'cdn',
               file: file as Blob,
             });
             onSuccess?.(res);

@@ -1,7 +1,6 @@
 import { FC, useState } from 'react';
 import { Image, message, Upload } from 'antd';
 import { LoadingOutlined, PictureOutlined, PlusOutlined } from '@ant-design/icons';
-import { useModel } from '@umijs/max';
 import ImgCrop from '../../components/ImgCrop';
 import styles from './index.less';
 import { upload } from '@/services/common';
@@ -68,8 +67,6 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
     return [{ status: 'done', response: { body: value }, filename: value.filename }];
   };
   const [fileList, setFileList] = useState<any[]>(getInitList());
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
 
   const hoverPrimaryColor = useEmotionCss(({ token }) => {
     return {
@@ -110,7 +107,7 @@ const UploadImage = ({ value, onChange, isAvatar }: Props) => {
         customRequest={async ({ file, onError, onSuccess }) => {
           try {
             const res = await upload({
-              type: currentUser?.upload_type,
+              type: 'cdn',
               file: file as Blob,
             });
             onSuccess?.(res);
