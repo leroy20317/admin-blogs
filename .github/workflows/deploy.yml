@@ -30,32 +30,25 @@ jobs:
         with:
           node-version: '18'
 
-      #安装 pnpm
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 8
-          run_install: false
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
       # 缓存 node modules
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
+      - name: Cache node modules
+        uses: actions/cache@v2
+        id: cache
+        env:
+          cache-name: cache-node-modules
         with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       # npm install
       - name: Install Dependencies
-        run: |
-          pnpm -v
-          pnpm install
+        if: steps.node.outputs.cache-hit != 'true'
+        run: npm install
 
       # Create .env
       - name: Create .env
@@ -69,7 +62,7 @@ jobs:
 
       # build
       - name: Publish
-        run: pnpm run publish
+        run: npm run publish
 
 
       # Deploy to server
