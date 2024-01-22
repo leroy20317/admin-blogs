@@ -75,3 +75,4 @@ jobs:
           key: ${{ secrets.ACCESS_TOKEN }}
           source: "dist/index.html"
           target: /wwwroot/admin-blogs
+          strip_components: 1
