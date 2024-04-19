@@ -45,6 +45,7 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
+    breakpoint: 'xl',
     collapsedWidth: 100,
     siderWidth: 200,
     actionsRender: () => [],

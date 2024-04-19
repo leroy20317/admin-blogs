@@ -26,7 +26,7 @@ interface ResponseStructure {
  */
 export const errorConfig: RequestConfig = {
   // baseURL: 'http://local.leroytop.com:5001/admin',
-  baseURL: '//api.leroytop.com/admin',
+  baseURL: 'https://api.leroytop.com/admin',
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
     // 错误抛出

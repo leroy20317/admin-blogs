@@ -54,64 +54,60 @@ ol {
   }
 }
 
-.ant-pro .ant-design-pro {
-  .ant-layout {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    width: 90vw;
-    max-width: ~'min(1500px, 90vw)' !important;
-    height: 60vw;
-    min-height: auto !important;
-    max-height: ~'min(1000px, 90vh)' !important;
-    margin: auto;
+.ant-layout {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: 90vw;
+  height: 60vw;
+  max-width: ~'min(1500px, 90vw)' !important;
+  min-height: auto !important;
+  max-height: ~'min(1000px, 90vh)' !important;
+  margin: auto;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 5px 40px #d2eaff;
+
+  @media (max-width: 1000px) {
+    height: auto;
+  }
+
+  .ant-layout-content {
+    position: relative;
+    margin: 0;
+    padding: 40px 0;
     overflow: hidden;
-    background: #0e8bff;
+    background-color: rgb(249, 252, 255);
     border-radius: 20px;
-    -webkit-box-shadow: 0 5px 40px #d2eaff;
-    box-shadow: 0 5px 40px #d2eaff;
+    transition: all 0.3s;
 
-    @media (max-width: 1000px) {
-      height: auto;
-    }
-
-    .ant-layout-content {
-      position: relative;
+    .ant-pro-page-container {
+      height: 100%;
       margin: 0;
-      padding: 40px 0;
-      overflow: hidden;
-      background-color: rgb(249, 252, 255);
-      border-radius: 20px;
-      transition: all 0.3s;
+      padding: 0 60px;
+      overflow: auto;
 
-      .ant-pro-page-container {
-        height: 100%;
+      &::-webkit-scrollbar-track {
+        background: #f9fcff;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #eef7ff;
+      }
+
+      &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      &-children-content {
         margin: 0;
-        padding: 0 60px;
-        overflow: auto;
-
-        &::-webkit-scrollbar-track {
-          background: #f9fcff;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background: #eef7ff;
-        }
-
-        &::-webkit-scrollbar {
-          width: 6px;
-          height: 6px;
-        }
-
-        &-children-content {
-          margin: 0;
-        }
-        &-warp {
-          background-color: transparent;
-        }
+      }
+      &-warp {
+        background-color: transparent;
       }
     }
   }
