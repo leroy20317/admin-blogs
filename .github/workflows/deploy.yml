@@ -54,14 +54,14 @@ jobs:
           pnpm install
 
       # Create .env
-      - name: Create .env
-        env:
-          ACCESSKEY: ${{ secrets.ACCESSKEY }}
-          SECRETKEY: ${{ secrets.SECRETKEY }}
-        run: |
-          echo ACCESSKEY="$ACCESSKEY" >> .env
-          echo SECRETKEY="$SECRETKEY" >> .env
-        shell: bash
+#      - name: Create .env
+#        env:
+#          ACCESSKEY: ${{ secrets.ACCESSKEY }}
+#          SECRETKEY: ${{ secrets.SECRETKEY }}
+#        run: |
+#          echo ACCESSKEY="$ACCESSKEY" >> .env
+#          echo SECRETKEY="$SECRETKEY" >> .env
+#        shell: bash
 
       # build
       - name: Publish
@@ -76,6 +76,6 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.ACCESS_TOKEN }}
-          source: "dist/index.html"
+          source: "dist/*"
           target: /wwwroot/admin-blogs
           strip_components: 1
