@@ -7,7 +7,6 @@ import routes from './routes';
 
 const env = process.env.REACT_APP_ENV || 'dev';
 const isDev = process.env.NODE_ENV === 'development';
-const packageName = process.env.npm_package_name;
 export default defineConfig({
   esbuildMinifyIIFE: true,
   /**
@@ -128,7 +127,7 @@ export default defineConfig({
    */
   headScripts: [
     // 解决首次加载时白屏的问题
-    { src: `https://cdn.leroytop.com/${packageName}/scripts/loading.js`, async: true },
+    { src: `/scripts/loading.js`, async: true },
   ],
   //================ pro 插件配置 =================
   presets: ['umi-presets-pro'],
@@ -141,7 +140,7 @@ export default defineConfig({
     strategy: 'normal',
   },
   requestRecord: {},
-  publicPath: isDev ? '/' : `https://cdn.leroytop.com/${packageName}/`,
+  publicPath: '/',
   chainWebpack: (memo) => {
     // 更多配置 https://github.com/Microsoft/monaco-editor-webpack-plugin#options
     memo.plugin('monaco-editor-webpack-plugin').use(MonacoWebpackPlugin, [

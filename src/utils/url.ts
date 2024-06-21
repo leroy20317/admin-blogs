@@ -1,7 +1,6 @@
-const prod: boolean = process.env.NODE_ENV === 'production';
 const Url = {
   webHost: 'https://www.leroytop.com',
-  staticHost: prod ? '//cdn.leroytop.com/admin-blogs/dist/' : '/',
+  staticHost: '/',
   // staticHost: '//static.leroytop.com/',
 
   login: `/user/login`, // 登录
