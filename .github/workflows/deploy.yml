@@ -47,27 +47,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      # Create .env
+      - name: Create .env
+        run: |
+          echo BUCKET="${{ secrets.BUCKET }}" >> .env
+          echo ACCESS_KEY_ID="${{ secrets.ACCESS_KEY_ID }}" >> .env
+          echo SECRET_ACCESS_KEY="${{ secrets.SECRET_ACCESS_KEY }}" >> .env
+          echo ENDPOINT="${{ secrets.ENDPOINT }}" >> .env
+          echo REGION="${{ secrets.REGION }}" >> .env
+        shell: bash
+
       # npm install
       - name: Install Dependencies
         run: |
           pnpm -v
           pnpm install
 
-      # Create .env
-#      - name: Create .env
-#        env:
-#          BUCKET: ${{ secrets.BUCKET }}
-#          ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
-#          SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
-#          ENDPOINT: ${{ secrets.ENDPOINT }}
-#          REGION: ${{ secrets.REGION }}
-#        run: |
-#          echo BUCKET="BUCKET" >> .env
-#          echo ACCESS_KEY_ID="ACCESS_KEY_ID" >> .env
-#          echo SECRET_ACCESS_KEY="SECRET_ACCESS_KEY" >> .env
-#          echo ENDPOINT="ENDPOINT" >> .env
-#          echo REGION="REGION" >> .env
-#        shell: bash
 
       # build
       - name: Publish
